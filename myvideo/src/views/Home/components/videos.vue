@@ -1,49 +1,88 @@
 <template>
-  <div class="videos" id="videos">
-    <div class="everyvideo" v-for="item in videosInfo" :key="item.id">
-      <router-link
-        target="_blank"
-        :to="{ name: 'VideoPage', query: { video_id: item.id } }"
-      >
-        <div
-          class="preview_img_miniVideo"
-          @mouseleave="mouseleave(item.id)"
-          @mouseenter="mouseenter(item.id)"
-          :id="`miniVideo${item.id}`"
-        >
-          <img
-            class="preview_img"
-            :src="
-              item.preview_src
-                ? resource_src + item.preview_src
-                : resource_src + 'previews/thumb_icon.png'
-            "
-            :alt="item.title"
-            loading="lazy"
-          />
-          <div class="bgInfo">
-            <div class="video_card">
-              <div class="video_card_left">
-                <span class="video_card_item">
-                  <img class="video_card_icon" src="@/assets/smallTV.png" />
-                  <span class="video_card_text">{{ item.views }}</span>
-                </span>
-                <span class="video_card_item">
-                  <img class="video_card_icon" src="@/assets/barrage.png" />
-                  <span class="video_card_text">{{ item.barragesNum }}</span>
-                </span>
-              </div>
-              <span class="duration" :id="`duration${item.id}`">{{
-                item.duration
-              }}</span>
+  <div>
+    <el-skeleton
+      class="result-skeleton"
+      animated
+      :count="24"
+      :throttle="500"
+      v-if="!loading"
+    >
+      <template #template>
+        <div class="video-skeleton-item">
+          <el-skeleton-item
+            variant="react"
+            class="result-skeleton-video"
+          ></el-skeleton-item>
+          <div class="video-info">
+            <el-skeleton-item
+              variant="react"
+              class="result-skeleton-title"
+            ></el-skeleton-item>
+            <el-skeleton-item
+              variant="react"
+              class="result-skeleton-title"
+              style="width: 170px; align-self: flex-start"
+            ></el-skeleton-item>
+            <div class="bottom-row">
+              <el-skeleton-item
+                variant="react"
+                class="result-skeleton-author"
+              ></el-skeleton-item
+              ><el-skeleton-item
+                variant="react"
+                class="result-skeleton-date"
+              ></el-skeleton-item>
             </div>
           </div>
         </div>
-        <div class="title">{{ item.title }}</div>
-      </router-link>
-      <div class="autherdate">
-        <span>{{ item.username }}</span>
-        <span>{{ item.date }}</span>
+      </template>
+    </el-skeleton>
+    <div class="videos" id="videos" v-else>
+      <div class="everyvideo" v-for="item in videosInfo" :key="item.id">
+        <router-link
+          target="_blank"
+          :to="{ name: 'VideoPage', query: { video_id: item.id } }"
+        >
+          <div
+            class="preview_img_miniVideo"
+            @mouseleave="mouseleave(item.id)"
+            @mouseenter="mouseenter(item.id)"
+            :id="`miniVideo${item.id}`"
+          >
+            <img
+              class="preview_img"
+              :src="
+                item.preview_src
+                  ? resource_src + item.preview_src
+                  : resource_src + 'previews/thumb_icon.png'
+              "
+              :alt="item.title"
+              loading="lazy"
+            />
+            <div class="bgInfo">
+              <div class="video_card">
+                <div class="video_card_left">
+                  <span class="video_card_item">
+                    <img class="video_card_icon" src="@/assets/smallTV.png" />
+                    <span class="video_card_text">{{ item.views }}</span>
+                  </span>
+                  <span class="video_card_item">
+                    <img class="video_card_icon" src="@/assets/barrage.png" />
+                    <span class="video_card_text">{{ item.barragesNum }}</span>
+                  </span>
+                </div>
+                <span class="duration" :id="`duration${item.id}`">{{
+                  item.duration
+                }}</span>
+              </div>
+            </div>
+          </div>
+          <div class="title">{{ item.title }}</div>
+        </router-link>
+        <div class="autherdate">
+          <span>{{ item.username }}</span>
+          <span>{{ item.date }}</span>
+        </div>
       </div>
     </div>
   </div>
@@ -59,10 +98,12 @@ export default {
   setup() {
     const router = useRouter();
     let videosInfo: videoinfo[] = reactive([]);
+    const loading = ref(false);
     const delay = (ms: number) =>
       new Promise((resolve, reject) => setTimeout(resolve, ms));
     http.get("/video/allInfo").then(function (res: any) {
       // 处理成功情况
+      loading.value = true;
       console.log(res, "res");
       res.data.data.forEach((e: any) => {
         e.date =
@@ -141,17 +182,52 @@ export default {
         videoMini.pause();
       }
     };
-    return {
-      videosInfo,
-      mouseleave,
-      mouseenter,
-      resource_src,
-    };
+    return { loading, videosInfo, mouseleave, mouseenter, resource_src };
   },
 };
 </script>
 
 <style lang="scss" scoped>
+.result-skeleton {
+  margin-left: 20px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, 240px);
+  grid-gap: 30px;
+  .video-skeleton-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .result-skeleton-video {
+    width: 240px;
+    height: 135px;
+  }
+  .video-info {
+    margin-top: 5px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 230px;
+    .result-skeleton-title {
+      margin-top: 5px;
+      width: 230px;
+      height: 21px;
+    }
+    .bottom-row {
+      margin-top: 10px;
+      width: 230px;
+      .result-skeleton-author {
+        width: 70px;
+        height: 21px;
+        margin-right: 10px;
+      }
+      .result-skeleton-date {
+        width: 60px;
+        height: 21px;
+      }
+    }
+  }
+}
 .videos {
   margin-left: 20px;
   display: grid;

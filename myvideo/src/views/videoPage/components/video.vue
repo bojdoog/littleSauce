@@ -1,6 +1,40 @@
 <template>
   <div id="mainPart">
-    <div class="videoTitle">
+    <el-skeleton
+      class="result-skeleton"
+      animated
+      :count="1"
+      :throttle="500"
+      v-if="loading === 1"
+    >
+      <template #template>
+        <div class="video-info">
+          <el-skeleton-item
+            variant="react"
+            class="result-skeleton-title"
+          ></el-skeleton-item>
+          <div class="bottom-row">
+            <el-skeleton-item
+              variant="react"
+              class="result-skeleton-views"
+            ></el-skeleton-item
+            ><el-skeleton-item
+              variant="react"
+              class="result-skeleton-dm"
+            ></el-skeleton-item>
+            <el-skeleton-item
+              variant="react"
+              class="result-skeleton-date"
+            ></el-skeleton-item>
+            <el-skeleton-item
+              variant="react"
+              class="result-skeleton-right"
+            ></el-skeleton-item>
+          </div>
+        </div>
+      </template>
+    </el-skeleton>
+    <div class="videoTitle" v-else>
       <h1 class="title">{{ title }}</h1>
       <div class="videoInfo">
         <span class="item">
@@ -518,6 +552,9 @@ const addAnimationRule = (dmbox) => {
 };
 // 视频播放时，一直调用
 const videoPlay = () => {
+  if (!video.value) {
+    return;
+  }
   // 操作弹幕
   dmInfo.forEach((dmInfo) => {
     // video.value.currentTime-dmInfo.duration>4
@@ -1113,6 +1150,45 @@ const closeSounds = () => {
         .fullScreen {
           right: 22px;
         }
+      }
+    }
+  }
+}
+
+.result-skeleton {
+  height: 80px;
+  margin: 13px 0px 0px 10px;
+  .video-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 720px;
+    .result-skeleton-title {
+      margin-top: 5px;
+      width: 100%;
+      height: 30px;
+    }
+    .bottom-row {
+      margin-top: 10px;
+      width: 100%;
+      .result-skeleton-views {
+        width: 45px;
+        height: 21px;
+        margin-right: 10px;
+      }
+      .result-skeleton-dm {
+        width: 35px;
+        height: 21px;
+        margin-right: 10px;
+      }
+      .result-skeleton-date {
+        width: 170px;
+        height: 22px;
+        margin-right: 15px;
+      }
+      .result-skeleton-right {
+        width: 200px;
+        height: 22px;
       }
     }
   }

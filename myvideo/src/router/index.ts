@@ -10,7 +10,11 @@ import Register from "@/views/register.vue";
 import ExamineVideo from "@/views/examineVideo.vue";
 import UploadVideo from "@/views/UploadVideo/index.vue";
 
-const routes: Array<RouteRecordRaw> = [
+interface MetaType {
+  title: string;
+}
+
+const routes: Array<RouteRecordRaw & { meta?: MetaType }> = [
   {
     path: "/",
     name: "Main",
@@ -21,8 +25,10 @@ const routes: Array<RouteRecordRaw> = [
         path: "/home",
         name: "Home",
         component: Home,
+        meta: { title: "littleSauce" },
       },
       {
+        // 订阅
         path: "/subscription",
         name: "Subscription",
         component: Subscription,
@@ -32,16 +38,19 @@ const routes: Array<RouteRecordRaw> = [
         path: "/user/:videoName?",
         name: "User",
         component: PersonalPage,
+        meta: { title: "个人中心" },
       },
       {
         path: "/uploadVideo",
         name: "UploadVideo",
         component: UploadVideo,
+        meta: { title: "上传视频" },
       },
       {
         path: "/examineVideo/:id?",
         name: "ExamineVideo",
         component: ExamineVideo,
+        meta: { title: "审核视频" },
       },
     ],
   },
@@ -49,16 +58,19 @@ const routes: Array<RouteRecordRaw> = [
     path: "/videoPage",
     name: "VideoPage",
     component: VideoPage,
+    meta: { title: "加载中···" },
   },
   {
     path: "/login",
     name: "Login",
     component: Login,
+    meta: { title: "请登录" },
   },
   {
     path: "/register",
     name: "Register",
     component: Register,
+    meta: { title: "请先注册" },
   },
   // {
   //   path: '/about',

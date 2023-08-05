@@ -35,6 +35,7 @@ const uploadFile = () => {
 let upLoadProgress = ref("");
 let formData = new FormData();
 let unauditedVideo_src: string;
+const emits = defineEmits(["unloadVideoInfo"]);
 
 const showInput = () => {
   if (!uploadInput.value.files[0]) return;
@@ -83,6 +84,7 @@ const handleuploadFiles = () => {
         type: "success",
         duration: 3000,
       });
+      emits("unloadVideoInfo");
     } else if (code === -1) {
       ElMessage({
         message: msg,

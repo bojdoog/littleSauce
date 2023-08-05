@@ -24,13 +24,12 @@ function getfilesize(size) {
   return (size / Math.pow(num, 4)).toFixed(2) + "T"; //T
 }
 
-// const unauditedVideoPath = '/var/www/html/unauditedVideo'
+// const unauditedVideoPath = "/var/www/html/UnauditedVideo";
 // const resourcePath = "/var/www/html";
 
 const unauditedVideoPath =
   "D:\\code-qianduan\\VIDEO_PROJECT\\myvideo\\public\\UnauditedVideo\\";
 const resourcePath = "D:\\code-qianduan\\VIDEO_PROJECT\\myvideo\\public\\";
-const videoPath = "D:\\code-qianduan\\VIDEO_PROJECT\\myvideo\\public\\video";
 
 var storage = multer.diskStorage({
   // 函数的形式

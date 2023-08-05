@@ -78,12 +78,15 @@ const handleuploadFiles = () => {
     return;
   }
 };
-const emits = defineEmits(["handleUploadBtn"]);
+const emits = defineEmits(["uploadVideoFile"]);
 const submitVideoInfo = () => {
   if (titleInput.value.value === "" || !file) {
     alert("标题不能为空,封面必须上传");
     return;
   }
+  emits("uploadVideoFile");
+};
+const _uploadVideoInfo = () => {
   let formData = new FormData();
   const videoInfo = {
     title: titleInput.value.value,
@@ -113,8 +116,8 @@ const submitVideoInfo = () => {
     .catch((e) => {
       console.log(e);
     });
-  emits("handleUploadBtn");
 };
+defineExpose({ _uploadVideoInfo });
 //获取当前日期，格式YYYY-MM-DD
 function getNowFormatDay(nowDate: any) {
   var char = "-";

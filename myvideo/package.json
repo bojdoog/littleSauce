@@ -1,5 +1,5 @@
 {
-  "name": "myvideo",
+  "name": "littleSauce",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -8,7 +8,7 @@
     "serve-test": "cross-env RELEASE_ENV=test NODE_ENV=devp yarn vue-cli-service serve",
     "serve-pre": "cross-env RELEASE_ENV=pre NODE_ENV=devp yarn vue-cli-service serve",
     "serve-prod": "cross-env RELEASE_ENV=prod NODE_ENV=prod yarn vue-cli-service serve",
-    "build": "vue-cli-service build"
+    "build": "cross-env RELEASE_ENV=prod NODE_ENV=prod yarn vue-cli-service build"
   },
   "dependencies": {
     "axios": "^1.4.0",

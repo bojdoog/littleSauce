@@ -1,14 +1,14 @@
-const { defineConfig } = require('@vue/cli-service')
-const { DefinePlugin } = require('webpack')
+const { defineConfig } = require("@vue/cli-service");
+const { DefinePlugin } = require("webpack");
 module.exports = defineConfig({
   transpileDependencies: true,
-  publicPath: './',
+  publicPath: "./",
   devServer: {
     // index: '/login.html',   //默认打开文件
     // open: true,             //自动打开浏览器
-    host: 'localhost',      //默认打开域名
-    port: 7000,             //默认打开端口号
-    https: false,           //开启关闭https请求
+    host: "localhost", //默认打开域名
+    port: 7000, //默认打开端口号
+    https: false, //开启关闭https请求
     // hotOnly: false,         //热更
 
     // proxy: {
@@ -27,15 +27,15 @@ module.exports = defineConfig({
     plugins: [
       new DefinePlugin({
         PRODUCTION: JSON.stringify(true),
-        VERSION: JSON.stringify('5fa3b9'),
+        VERSION: JSON.stringify("5fa3b9"),
         BROWSER_SUPPORTS_HTML5: true,
-        TWO: '1+1',
-        'typeof window': JSON.stringify('object'),
+        TWO: "1+1",
+        "typeof window": JSON.stringify("object"),
         "process.env": {
           NODE_ENV: JSON.stringify(process.env.NODE_ENV),
           RELEASE_ENV: JSON.stringify(process.env.RELEASE_ENV),
         },
       }),
     ],
-  }
-})
+  },
+});

@@ -251,9 +251,9 @@ const handleLogin = (loginInfo: loginInfo) => {
       if (res.data.status === 200) {
         Cookie.set("USER_TOKEN", res.data.token);
         let _userInfo = {
-          uid: res.data.data[0].uid,
-          headsculpture_src: res.data.data[0].headsculpture,
-          username: res.data.data[0].username,
+          uid: res.data.userInfo.uid,
+          headsculpture_src: res.data.userInfo.headsculpture,
+          username: res.data.userInfo.username,
           menu: res.data.menu,
         };
         let userInfo = JSON.stringify(_userInfo);
@@ -263,7 +263,7 @@ const handleLogin = (loginInfo: loginInfo) => {
           message:
             res.data.message +
             "，用户 " +
-            res.data.data[0].username +
+            res.data.userInfo.username +
             "，欢迎您",
           type: "success",
           duration: 3000,
@@ -278,6 +278,7 @@ const handleLogin = (loginInfo: loginInfo) => {
     }
   });
 };
+
 onMounted(() => {});
 </script>
 

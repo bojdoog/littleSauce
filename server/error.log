@@ -1,0 +1,209 @@
+db error Error: Connection lost: The server closed the connection.
+    at Protocol.end (D:\code-qianduan\VIDEO_PROJECT\server\node_modules\mysql\lib\protocol\Protocol.js:112:13)
+    at Socket.<anonymous> (D:\code-qianduan\VIDEO_PROJECT\server\node_modules\mysql\lib\Connection.js:94:28)
+    at Socket.<anonymous> (D:\code-qianduan\VIDEO_PROJECT\server\node_modules\mysql\lib\Connection.js:526:10)
+    at Socket.emit (node:events:525:35)
+    at endReadableNT (node:internal/streams/readable:1358:12)
+    at processTicksAndRejections (node:internal/process/task_queues:83:21) {
+  fatal: true,
+  code: 'PROTOCOL_CONNECTION_LOST'
+}
+db error执行重连:Connection lost: The server closed the connection.
+db error Error: Connection lost: The server closed the connection.
+    at Protocol.end (D:\code-qianduan\VIDEO_PROJECT\server\node_modules\mysql\lib\protocol\Protocol.js:112:13)
+    at Socket.<anonymous> (D:\code-qianduan\VIDEO_PROJECT\server\node_modules\mysql\lib\Connection.js:94:28)
+    at Socket.<anonymous> (D:\code-qianduan\VIDEO_PROJECT\server\node_modules\mysql\lib\Connection.js:526:10)
+    at Socket.emit (node:events:525:35)
+    at endReadableNT (node:internal/streams/readable:1358:12)
+    at processTicksAndRejections (node:internal/process/task_queues:83:21) {
+  fatal: true,
+  code: 'PROTOCOL_CONNECTION_LOST'
+}
+db error执行重连:Connection lost: The server closed the connection.
+db error Error: Connection lost: The server closed the connection.
+    at Protocol.end (D:\code-qianduan\VIDEO_PROJECT\server\node_modules\mysql\lib\protocol\Protocol.js:112:13)
+    at Socket.<anonymous> (D:\code-qianduan\VIDEO_PROJECT\server\node_modules\mysql\lib\Connection.js:94:28)
+    at Socket.<anonymous> (D:\code-qianduan\VIDEO_PROJECT\server\node_modules\mysql\lib\Connection.js:526:10)
+    at Socket.emit (node:events:525:35)
+    at endReadableNT (node:internal/streams/readable:1358:12)
+    at processTicksAndRejections (node:internal/process/task_queues:83:21) {
+  fatal: true,
+  code: 'PROTOCOL_CONNECTION_LOST'
+}
+db error执行重连:Connection lost: The server closed the connection.
+db error Error: Connection lost: The server closed the connection.
+    at Protocol.end (D:\code-qianduan\VIDEO_PROJECT\server\node_modules\mysql\lib\protocol\Protocol.js:112:13)
+    at Socket.<anonymous> (D:\code-qianduan\VIDEO_PROJECT\server\node_modules\mysql\lib\Connection.js:94:28)
+    at Socket.<anonymous> (D:\code-qianduan\VIDEO_PROJECT\server\node_modules\mysql\lib\Connection.js:526:10)
+    at Socket.emit (node:events:525:35)
+    at endReadableNT (node:internal/streams/readable:1358:12)
+    at processTicksAndRejections (node:internal/process/task_queues:83:21) {
+  fatal: true,
+  code: 'PROTOCOL_CONNECTION_LOST'
+}
+db error执行重连:Connection lost: The server closed the connection.
+db error Error: Connection lost: The server closed the connection.
+    at Protocol.end (D:\code-qianduan\VIDEO_PROJECT\server\node_modules\mysql\lib\protocol\Protocol.js:112:13)
+    at Socket.<anonymous> (D:\code-qianduan\VIDEO_PROJECT\server\node_modules\mysql\lib\Connection.js:94:28)
+    at Socket.<anonymous> (D:\code-qianduan\VIDEO_PROJECT\server\node_modules\mysql\lib\Connection.js:526:10)
+    at Socket.emit (node:events:525:35)
+    at endReadableNT (node:internal/streams/readable:1358:12)
+    at processTicksAndRejections (node:internal/process/task_queues:83:21) {
+  fatal: true,
+  code: 'PROTOCOL_CONNECTION_LOST'
+}
+db error执行重连:Connection lost: The server closed the connection.
+db error Error: Connection lost: The server closed the connection.
+    at Protocol.end (D:\code-qianduan\VIDEO_PROJECT\server\node_modules\mysql\lib\protocol\Protocol.js:112:13)
+    at Socket.<anonymous> (D:\code-qianduan\VIDEO_PROJECT\server\node_modules\mysql\lib\Connection.js:94:28)
+    at Socket.<anonymous> (D:\code-qianduan\VIDEO_PROJECT\server\node_modules\mysql\lib\Connection.js:526:10)
+    at Socket.emit (node:events:525:35)
+    at endReadableNT (node:internal/streams/readable:1358:12)
+    at processTicksAndRejections (node:internal/process/task_queues:83:21) {
+  fatal: true,
+  code: 'PROTOCOL_CONNECTION_LOST'
+}
+db error执行重连:Connection lost: The server closed the connection.
+db error Error: Connection lost: The server closed the connection.
+    at Protocol.end (D:\code-qianduan\VIDEO_PROJECT\server\node_modules\mysql\lib\protocol\Protocol.js:112:13)
+    at Socket.<anonymous> (D:\code-qianduan\VIDEO_PROJECT\server\node_modules\mysql\lib\Connection.js:94:28)
+    at Socket.<anonymous> (D:\code-qianduan\VIDEO_PROJECT\server\node_modules\mysql\lib\Connection.js:526:10)
+    at Socket.emit (node:events:525:35)
+    at endReadableNT (node:internal/streams/readable:1358:12)
+    at processTicksAndRejections (node:internal/process/task_queues:83:21) {
+  fatal: true,
+  code: 'PROTOCOL_CONNECTION_LOST'
+}
+db error执行重连:Connection lost: The server closed the connection.
+db error Error: Connection lost: The server closed the connection.
+    at Protocol.end (D:\code-qianduan\VIDEO_PROJECT\server\node_modules\mysql\lib\protocol\Protocol.js:112:13)
+    at Socket.<anonymous> (D:\code-qianduan\VIDEO_PROJECT\server\node_modules\mysql\lib\Connection.js:94:28)
+    at Socket.<anonymous> (D:\code-qianduan\VIDEO_PROJECT\server\node_modules\mysql\lib\Connection.js:526:10)
+    at Socket.emit (node:events:525:35)
+    at endReadableNT (node:internal/streams/readable:1358:12)
+    at processTicksAndRejections (node:internal/process/task_queues:83:21) {
+  fatal: true,
+  code: 'PROTOCOL_CONNECTION_LOST'
+}
+db error执行重连:Connection lost: The server closed the connection.
+db error Error: Connection lost: The server closed the connection.
+    at Protocol.end (D:\code-qianduan\VIDEO_PROJECT\server\node_modules\mysql\lib\protocol\Protocol.js:112:13)
+    at Socket.<anonymous> (D:\code-qianduan\VIDEO_PROJECT\server\node_modules\mysql\lib\Connection.js:94:28)
+    at Socket.<anonymous> (D:\code-qianduan\VIDEO_PROJECT\server\node_modules\mysql\lib\Connection.js:526:10)
+    at Socket.emit (node:events:525:35)
+    at endReadableNT (node:internal/streams/readable:1358:12)
+    at processTicksAndRejections (node:internal/process/task_queues:83:21) {
+  fatal: true,
+  code: 'PROTOCOL_CONNECTION_LOST'
+}
+db error执行重连:Connection lost: The server closed the connection.
+db error Error: Connection lost: The server closed the connection.
+    at Protocol.end (D:\code-qianduan\VIDEO_PROJECT\server\node_modules\mysql\lib\protocol\Protocol.js:112:13)
+    at Socket.<anonymous> (D:\code-qianduan\VIDEO_PROJECT\server\node_modules\mysql\lib\Connection.js:94:28)
+    at Socket.<anonymous> (D:\code-qianduan\VIDEO_PROJECT\server\node_modules\mysql\lib\Connection.js:526:10)
+    at Socket.emit (node:events:525:35)
+    at endReadableNT (node:internal/streams/readable:1358:12)
+    at processTicksAndRejections (node:internal/process/task_queues:83:21) {
+  fatal: true,
+  code: 'PROTOCOL_CONNECTION_LOST'
+}
+db error执行重连:Connection lost: The server closed the connection.
+db error Error: Connection lost: The server closed the connection.
+    at Protocol.end (D:\code-qianduan\VIDEO_PROJECT\server\node_modules\mysql\lib\protocol\Protocol.js:112:13)
+    at Socket.<anonymous> (D:\code-qianduan\VIDEO_PROJECT\server\node_modules\mysql\lib\Connection.js:94:28)
+    at Socket.<anonymous> (D:\code-qianduan\VIDEO_PROJECT\server\node_modules\mysql\lib\Connection.js:526:10)
+    at Socket.emit (node:events:525:35)
+    at endReadableNT (node:internal/streams/readable:1358:12)
+    at processTicksAndRejections (node:internal/process/task_queues:83:21) {
+  fatal: true,
+  code: 'PROTOCOL_CONNECTION_LOST'
+}
+db error执行重连:Connection lost: The server closed the connection.
+db error Error: Connection lost: The server closed the connection.
+    at Protocol.end (D:\code-qianduan\VIDEO_PROJECT\server\node_modules\mysql\lib\protocol\Protocol.js:112:13)
+    at Socket.<anonymous> (D:\code-qianduan\VIDEO_PROJECT\server\node_modules\mysql\lib\Connection.js:94:28)
+    at Socket.<anonymous> (D:\code-qianduan\VIDEO_PROJECT\server\node_modules\mysql\lib\Connection.js:526:10)
+    at Socket.emit (node:events:525:35)
+    at endReadableNT (node:internal/streams/readable:1358:12)
+    at processTicksAndRejections (node:internal/process/task_queues:83:21) {
+  fatal: true,
+  code: 'PROTOCOL_CONNECTION_LOST'
+}
+db error执行重连:Connection lost: The server closed the connection.
+db error Error: Connection lost: The server closed the connection.
+    at Protocol.end (D:\code-qianduan\VIDEO_PROJECT\server\node_modules\mysql\lib\protocol\Protocol.js:112:13)
+    at Socket.<anonymous> (D:\code-qianduan\VIDEO_PROJECT\server\node_modules\mysql\lib\Connection.js:94:28)
+    at Socket.<anonymous> (D:\code-qianduan\VIDEO_PROJECT\server\node_modules\mysql\lib\Connection.js:526:10)
+    at Socket.emit (node:events:525:35)
+    at endReadableNT (node:internal/streams/readable:1358:12)
+    at processTicksAndRejections (node:internal/process/task_queues:83:21) {
+  fatal: true,
+  code: 'PROTOCOL_CONNECTION_LOST'
+}
+db error执行重连:Connection lost: The server closed the connection.
+db error Error: Connection lost: The server closed the connection.
+    at Protocol.end (D:\code-qianduan\VIDEO_PROJECT\server\node_modules\mysql\lib\protocol\Protocol.js:112:13)
+    at Socket.<anonymous> (D:\code-qianduan\VIDEO_PROJECT\server\node_modules\mysql\lib\Connection.js:94:28)
+    at Socket.<anonymous> (D:\code-qianduan\VIDEO_PROJECT\server\node_modules\mysql\lib\Connection.js:526:10)
+    at Socket.emit (node:events:525:35)
+    at endReadableNT (node:internal/streams/readable:1358:12)
+    at processTicksAndRejections (node:internal/process/task_queues:83:21) {
+  fatal: true,
+  code: 'PROTOCOL_CONNECTION_LOST'
+}
+db error执行重连:Connection lost: The server closed the connection.
+db error Error: Connection lost: The server closed the connection.
+    at Protocol.end (D:\code-qianduan\VIDEO_PROJECT\server\node_modules\mysql\lib\protocol\Protocol.js:112:13)
+    at Socket.<anonymous> (D:\code-qianduan\VIDEO_PROJECT\server\node_modules\mysql\lib\Connection.js:94:28)
+    at Socket.<anonymous> (D:\code-qianduan\VIDEO_PROJECT\server\node_modules\mysql\lib\Connection.js:526:10)
+    at Socket.emit (node:events:525:35)
+    at endReadableNT (node:internal/streams/readable:1358:12)
+    at processTicksAndRejections (node:internal/process/task_queues:83:21) {
+  fatal: true,
+  code: 'PROTOCOL_CONNECTION_LOST'
+}
+db error执行重连:Connection lost: The server closed the connection.
+db error Error: Connection lost: The server closed the connection.
+    at Protocol.end (D:\code-qianduan\VIDEO_PROJECT\server\node_modules\mysql\lib\protocol\Protocol.js:112:13)
+    at Socket.<anonymous> (D:\code-qianduan\VIDEO_PROJECT\server\node_modules\mysql\lib\Connection.js:94:28)
+    at Socket.<anonymous> (D:\code-qianduan\VIDEO_PROJECT\server\node_modules\mysql\lib\Connection.js:526:10)
+    at Socket.emit (node:events:525:35)
+    at endReadableNT (node:internal/streams/readable:1358:12)
+    at processTicksAndRejections (node:internal/process/task_queues:83:21) {
+  fatal: true,
+  code: 'PROTOCOL_CONNECTION_LOST'
+}
+db error执行重连:Connection lost: The server closed the connection.
+db error Error: Connection lost: The server closed the connection.
+    at Protocol.end (D:\code-qianduan\VIDEO_PROJECT\server\node_modules\mysql\lib\protocol\Protocol.js:112:13)
+    at Socket.<anonymous> (D:\code-qianduan\VIDEO_PROJECT\server\node_modules\mysql\lib\Connection.js:94:28)
+    at Socket.<anonymous> (D:\code-qianduan\VIDEO_PROJECT\server\node_modules\mysql\lib\Connection.js:526:10)
+    at Socket.emit (node:events:525:35)
+    at endReadableNT (node:internal/streams/readable:1358:12)
+    at processTicksAndRejections (node:internal/process/task_queues:83:21) {
+  fatal: true,
+  code: 'PROTOCOL_CONNECTION_LOST'
+}
+db error执行重连:Connection lost: The server closed the connection.
+db error Error: Connection lost: The server closed the connection.
+    at Protocol.end (D:\code-qianduan\VIDEO_PROJECT\server\node_modules\mysql\lib\protocol\Protocol.js:112:13)
+    at Socket.<anonymous> (D:\code-qianduan\VIDEO_PROJECT\server\node_modules\mysql\lib\Connection.js:94:28)
+    at Socket.<anonymous> (D:\code-qianduan\VIDEO_PROJECT\server\node_modules\mysql\lib\Connection.js:526:10)
+    at Socket.emit (node:events:525:35)
+    at endReadableNT (node:internal/streams/readable:1358:12)
+    at processTicksAndRejections (node:internal/process/task_queues:83:21) {
+  fatal: true,
+  code: 'PROTOCOL_CONNECTION_LOST'
+}
+db error执行重连:Connection lost: The server closed the connection.
+db error Error: Connection lost: The server closed the connection.
+    at Protocol.end (D:\code-qianduan\VIDEO_PROJECT\server\node_modules\mysql\lib\protocol\Protocol.js:112:13)
+    at Socket.<anonymous> (D:\code-qianduan\VIDEO_PROJECT\server\node_modules\mysql\lib\Connection.js:94:28)
+    at Socket.<anonymous> (D:\code-qianduan\VIDEO_PROJECT\server\node_modules\mysql\lib\Connection.js:526:10)
+    at Socket.emit (node:events:525:35)
+    at endReadableNT (node:internal/streams/readable:1358:12)
+    at processTicksAndRejections (node:internal/process/task_queues:83:21) {
+  fatal: true,
+  code: 'PROTOCOL_CONNECTION_LOST'
+}
+db error执行重连:Connection lost: The server closed the connection.

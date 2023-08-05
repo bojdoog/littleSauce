@@ -6,7 +6,7 @@ const fs = require("fs");
 const multer = require("multer");
 const { log } = require("console");
 
-// const unauditedPosterPath = '/var/www/html/video'
+// const unauditedPosterPath = "/var/www/html/UnauditedPoster";
 
 const unauditedPosterPath =
   "D:\\code-qianduan\\VIDEO_PROJECT\\myvideo\\public\\UnauditedPoster";

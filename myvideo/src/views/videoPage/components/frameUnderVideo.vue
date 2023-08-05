@@ -1,10 +1,17 @@
 <template>
   <div class="frameUnderVideo">
     <div class="innnerframeUnderVideo">
-      <span class="font-dm"
-        >已装填&nbsp;{{ props.barrages + sendDmNum }}&nbsp;条弹幕</span
-      >
-      <span class="send-dm">
+      <el-skeleton :rows="1" v-if="props.barrages === -1">
+        <template #template>
+          <el-skeleton-item
+            style="width: 165px; height: 24px; margin-right: 140px"
+            variant="react"
+        /></template>
+      </el-skeleton>
+      <div class="font-dm" v-else>
+        已装填&nbsp;{{ props.barrages + sendDmNum }}&nbsp;条弹幕
+      </div>
+      <div class="send-dm">
         <div class="sendDmInput">
           <div class="sendDmIcon">
             <el-icon size="22" class="Ship-icon"><Ship /></el-icon>
@@ -16,7 +23,7 @@
           />
         </div>
         <div class="sendDmButton" @click="sendDm">发送</div>
-      </span>
+      </div>
     </div>
   </div>
 </template>
@@ -29,6 +36,7 @@ import { useRoute } from "vue-router";
 const props = defineProps({
   barrages: {
     type: Number,
+    default: -1,
   },
   sendDmVideoDuration: {
     type: Number,
@@ -60,6 +68,8 @@ const sendDm = async () => {
 <style lang="scss" scoped>
 .frameUnderVideo {
   position: relative;
+  display: flex;
+  align-items: center;
   width: 720px;
   height: 50px;
   box-shadow: 1px 0px 22px 0px rgba(220, 213, 213, 0.5);

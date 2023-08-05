@@ -1,8 +1,11 @@
 <template>
   <div class="totalPage">
     <div class="upload-video-area">
-      <uploadVideo ref="uploadVideo" />
-      <inputVideoInfo @handleUploadBtn="handleUploadBtn" />
+      <uploadVideo ref="uploadVideo" @unloadVideoInfo="unloadVideoInfo" />
+      <inputVideoInfo
+        @uploadVideoFile="uploadVideoFile"
+        ref="uploadVideoInfo"
+      />
     </div>
   </div>
 </template>
@@ -12,8 +15,12 @@ import { ref } from "vue";
 import UploadVideo from "./components/UploadVideo.vue";
 import InputVideoInfo from "./components/InputVideoInfo.vue";
 const uploadVideo = ref();
-const handleUploadBtn = () => {
+const uploadVideoInfo = ref();
+const uploadVideoFile = () => {
   uploadVideo.value.handleuploadFiles();
+};
+const unloadVideoInfo = () => {
+  uploadVideoInfo.value._uploadVideoInfo();
 };
 </script>
 
