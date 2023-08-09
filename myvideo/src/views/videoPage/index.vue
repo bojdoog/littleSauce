@@ -25,7 +25,7 @@
       <div class="bodyLeft">
         <Video />
       </div>
-      <div class="bodyRight"></div>
+      <div class="bodyRight"><AuthorInfo /></div>
     </div>
   </div>
 </template>
@@ -38,12 +38,12 @@ import Cookie from "js-cookie";
 import envMap from "@/config/app.config";
 import { ElMessage } from "element-plus";
 import { useRouter } from "vue-router";
+import AuthorInfo from "./components/AuthorInfo.vue";
 let userInfo: any = reactive({});
-let resource_src = ref("");
+let resource_src = ref(envMap["resource"]);
 const router = useRouter();
 onMounted(() => {
   userInfo = JSON.parse(Cookie.get("USER_INFO"));
-  resource_src.value = envMap["resource"];
 });
 const handleClick = (command: string) => {
   if (command === "logout") {
@@ -88,7 +88,7 @@ const handleClick = (command: string) => {
     width: 720px;
   }
   .bodyRight {
-    width: 360px;
+    width: 400px;
     margin-left: 30px;
   }
 }

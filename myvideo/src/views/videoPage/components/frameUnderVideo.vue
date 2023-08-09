@@ -50,6 +50,18 @@ const inputDm = ref();
 const route = useRoute();
 const emit = defineEmits(["getDuration", "sendDmInfo"]);
 
+const getDate = () => {
+  const curDura = new Date();
+  let Month = formatDate(curDura.getMonth() + 1); // 月份从 0 开始，所以需要 +1
+  let day = formatDate(curDura.getDate());
+  let Hour = formatDate(curDura.getHours());
+  let Minute = formatDate(curDura.getMinutes());
+  return `${Month}-${day} ${Hour}:${Minute}`;
+};
+const formatDate = (val: number) => {
+  return val >= 10 ? val : "0" + val;
+};
+
 const sendDm = async () => {
   sendDmNum.value++;
   await emit("getDuration");
@@ -57,6 +69,7 @@ const sendDm = async () => {
     video_id: route.query.video_id,
     barrage: inputDm.value.value,
     duration: props.sendDmVideoDuration,
+    date: getDate(),
   };
   emit("sendDmInfo", dmInfo);
   sendDmToServer(dmInfo).then(() => {

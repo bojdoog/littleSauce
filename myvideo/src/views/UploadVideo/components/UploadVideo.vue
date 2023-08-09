@@ -1,11 +1,23 @@
 <template>
   <div class="upload-video">
-    <div id="upload-icon" ref="uploadIcon" @click="uploadFile">
-      <input type="file" name="" ref="uploadInput" @change="showInput" />
+    <div
+      class="upload-icon"
+      ref="uploadIcon"
+      @click="uploadFile"
+      v-if="!store.state.tab.hasUploadVideo"
+    >
+      <div class="row item"></div>
+      <div class="column item"></div>
     </div>
-    <div class="upload-progress" v-if="store.state.tab.hasUploadVideo">
+    <video @click="uploadFile" ref="video" class="videofile" v-else></video>
+    <input type="file" name="" ref="uploadInput" @change="showInput" />
+    <div class="upload-info" v-if="store.state.tab.hasUploadVideo">
       <div class="fileName">视频文件名：{{ file.name }}</div>
-      <div class="progress">{{ upLoadProgress }}</div>
+      <div class="upload-progress">
+        <div class="cur-progress" ref="curProgress"></div>
+        <div class="total-progress"></div>
+        <div class="upload-rate">{{ uploadRate }}/100%</div>
+      </div>
     </div>
     <div class="describe" v-else>
       请上传视频<br /><span style="font-size: 8px"
@@ -20,7 +32,7 @@ interface fileChunks {
   hash: string;
   chunk: Blob;
 }
-import { onBeforeMount, onMounted, reactive, ref } from "vue";
+import { onBeforeMount, onMounted, reactive, ref, nextTick } from "vue";
 import { uploadVideo, mergeChunks, checkPoint } from "@/api";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
@@ -41,9 +53,11 @@ const isUploading = ref(false);
 const uploadFile = () => {
   uploadInput.value.click();
 };
-
+const uploadRate = ref(0);
+const successNum = ref(0);
 let upLoadProgress = ref("");
-
+const curProgress = ref();
+const video = ref();
 // 得到hash值
 function generateSHA1Hash(input: string) {
   const sha1Hash = CryptoJS.SHA1(input).toString();
@@ -58,8 +72,7 @@ const uploadList = async () => {
   // 所有上传切片的组
   const uploadTasks = [];
   for (let i = 0; i < fileChunks.length; i++) {
-    console.log(i, fileChunks.length, "iiiiiiiiiii");
-
+    let len = fileChunks.length;
     let item = fileChunks[i];
     let formData = new FormData();
     formData.append("filename", file.value.name.slice(0, -4));
@@ -73,6 +86,8 @@ const uploadList = async () => {
     task.then(() => {
       let index = pool.findIndex((t) => t === task);
       pool.splice(index);
+      uploadRate.value = (++successNum.value / len) * 100;
+      curProgress.value.style.width = `${uploadRate.value}%`;
     });
     // 把请求放入并发池中，如果已经达到最大并发量
     pool.push(task);
@@ -127,7 +142,7 @@ const showInput = async () => {
   }
   await checkPoint({
     filename: file.value.name.slice(0, -4),
-  }).then((res) => {
+  }).then(async (res) => {
     const { message, point, hash } = res.data;
     ElMessage({
       message: message,
@@ -137,9 +152,20 @@ const showInput = async () => {
     // 进行分块
     fileChunks = [...sliceFile(file.value, point, hash)];
     router.push({ params: { videoName: file.value.name } });
+    initProgress();
     uploadList();
     store.commit("changeHasUploadVideo", true);
+    const objectURL = URL.createObjectURL(file.value);
+    await nextTick();
+    video.value.src = objectURL;
   });
+};
+
+const initProgress = async () => {
+  await nextTick();
+  uploadRate.value = 0;
+  successNum.value = 0;
+  curProgress.value.style.width = "0%";
 };
 
 const sliceFile = (file: File, point: number, fileIndex: number) => {
@@ -163,76 +189,6 @@ onBeforeMount(() => {
 onMounted(() => {
   store.commit("changeCompleteVideoUpload", false);
 });
-
-const handleuploadFiles = () => {
-  // 打开输入信息框
-  store.commit("openInputVideoInfo");
-  // if (!/(PNG|JPG|JPRG)/i.test(file.type))
-  isUploading.value = true;
-
-  // const uploadList = fileChunks.map((item) => {
-  //   let formData = new FormData();
-  //   formData.append("uid", JSON.parse(Cookie.get("USER_INFO")).uid);
-  //   formData.append("filename", file.value.name);
-  //   formData.append("hash", `${item.hash}`);
-  //   formData.append("chunk", item.chunk);
-  //   return http({
-  //     method: "POST",
-  //     url: "/upload/uploadVideo",
-  //     data: formData,
-  //     headers: {
-  //       "Content-Type": "multipart/form-data",
-  //     },
-  //   });
-  // });
-
-  // Promise.all(uploadList).then(async (res) => {
-  //   console.log(res, "res");
-  //   await http({
-  //     method: "get",
-  //     url: "/merge",
-  //     params: {
-  //       filename: file.value.name,
-  //     },
-  //   });
-  // });
-
-  // 把文件发给服务器
-  // http({
-  //   url: "/upload/uploadVideo",
-  //   method: "POST",
-  //   data: formData,
-  //   headers: {
-  //     "Content-Type": "multipart/form-data",
-  //   },
-  //   onUploadProgress: function (progressEvent: any) {
-  //     console.log(progressEvent, "progressEvent");
-  //     //原生获取上传进度的事件
-  //     if (progressEvent.lengthComputable) {
-  //       //属性lengthComputable主要表明总共需要完成的工作量和已经完成的工作是否可以被测量
-  //       //如果lengthComputable为false，就获取不到progressEvent.total和progressEvent.loaded
-  //       upLoadProgress.value =
-  //         (progressEvent.loaded / progressEvent.total) * 100 + "%"; //实时获取上传进度
-  //     }
-  //   },
-  // }).then((res: any) => {
-  //   const { code, msg } = res.data;
-  //   if (code === 0) {
-  //     ElMessage({
-  //       message: msg,
-  //       type: "success",
-  //       duration: 3000,
-  //     });
-  //     emits("unloadVideoInfo");
-  //   } else if (code === -1) {
-  //     ElMessage({
-  //       message: msg,
-  //       type: "error",
-  //       duration: 3000,
-  //     });
-  //   }
-  // });
-};
 </script>
 
 <style lang="scss" scoped>
@@ -248,44 +204,94 @@ const handleuploadFiles = () => {
   display: flex;
   justify-content: flex-start;
   width: 800px;
-  #upload-icon {
+  .videofile {
+    width: 100px;
+    height: 100px;
+    background-color: #9b9b9b;
+  }
+  .upload-icon {
     cursor: pointer;
     width: 100px;
     height: 100px;
     position: relative;
-    background-color: rgba(227, 222, 222, 0.642);
-    &:before,
-    &:after {
-      content: "";
+    background: linear-gradient(90deg, #09b8dbc3 0%, #29bcd97e 100%);
+    .item {
       position: absolute;
-      z-index: -1;
-      background: #090909;
+      background-color: #fff;
     }
-    &:before {
-      left: 50%;
-      width: 2%;
-      margin-left: -1%;
-      margin-top: 10%;
-      height: 80%;
+    .row {
+      top: 49px;
+      left: 10px;
+      width: 80px;
+      height: 2px;
     }
-    &:after {
-      top: 50%;
-      height: 2%;
-      margin-top: -1%;
-      margin-left: 10%;
-      width: 80%;
+    .column {
+      top: 10px;
+      left: 49px;
+      width: 2px;
+      height: 80px;
     }
-    input[type="file"] {
-      display: none;
-    }
+    // &:before,
+    // &:after {
+    //   content: "";
+    //   position: absolute;
+    //   z-index: -1;
+    //   background-color: #000; /* 设置伪元素的背景颜色 */
+    // }
+    // &:before {
+    //   left: 50%;
+    //   width: 2%;
+    //   margin-left: -1%;
+    //   margin-top: 10%;
+    //   height: 80%;
+    // }
+    // &:after {
+    //   top: 50%;
+    //   height: 2%;
+    //   margin-top: -1%;
+    //   margin-left: 10%;
+    //   width: 80%;
+    // }
   }
-  .upload-progress {
+  input[type="file"] {
+    display: none;
+  }
+  .upload-info {
+    position: relative;
     width: 700px;
     height: 100px;
-    background-color: rgba(255, 228, 196, 0.475);
+    background: linear-gradient(
+      -90deg,
+      rgba(131, 210, 234, 0.197) 0%,
+      #29bcd97e 100%
+    );
     .fileName {
-      margin: 10px 0px 0px 10px;
+      margin: 18px 0px 0px 28px;
       font-size: 20px;
+    }
+    .upload-rate {
+      position: absolute;
+      font: normal 15px Arial;
+      top: -20px;
+      right: 0px;
+    }
+    .upload-progress {
+      margin: 25px 0 0 30px;
+      position: relative;
+      height: 5px;
+      width: 400px;
+      .cur-progress {
+        position: absolute;
+        // width: 30%;
+        background-color: rgb(23, 199, 23);
+        transition: width 0.5s ease-in-out;
+        height: 100%;
+      }
+      .total-progress {
+        height: 100%;
+        width: 100%;
+        background-color: #9c9c9c;
+      }
     }
   }
 }

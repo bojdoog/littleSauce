@@ -156,17 +156,28 @@ onMounted(() => {
   border-radius: 15px;
   border: 3px solid #3f3d3d;
 }
+
+@keyframes initForm {
+  0% {
+    transform: translate(-250px, -500px);
+  }
+  100% {
+    transform: translate(-250px, -250px);
+  }
+}
+
 .form {
   position: fixed;
   left: 50%;
-  transform: translateX(-250px);
-  top: 100px;
+  transform: translate(-250px, -250px);
   width: 500px;
-  height: 600px;
+  height: 550px;
+  top: 50%;
   background-color: #fff;
   display: flex;
   flex-direction: column;
   align-items: center;
+  animation: initForm 0.4s ease-in-out;
   .title-line {
     width: 470px;
     height: 30px;
@@ -180,7 +191,7 @@ onMounted(() => {
     }
   }
   .username {
-    margin-top: 50px;
+    margin-top: 30px;
     height: 40px;
     width: 420px;
     display: flex;

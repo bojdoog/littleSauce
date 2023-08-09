@@ -56,7 +56,9 @@ router.get("/allInfo", async (req, res) => {
 router.get("/dmInfo", async (req, res) => {
   const { video_id } = req.query;
   const $query =
-    'select barrage,duration from barrages where video_id="' + video_id + '"';
+    'select id,barrage,duration,date from barrages where video_id="' +
+    video_id +
+    '"';
   const $query2 =
     'select count(*)barragesNum FROM videoweb.barrages where video_id="' +
     video_id +
@@ -77,15 +79,17 @@ router.get("/dmInfo", async (req, res) => {
 
 router.post("/receiveDm", async (req, res) => {
   const dmInfo = req.body;
-  const { video_id, barrage, duration } = dmInfo;
+  const { video_id, barrage, duration, date } = dmInfo;
   console.log(dmInfo);
   const $query =
-    'insert into barrages (video_id,barrage,duration)values("' +
+    'insert into barrages (video_id,barrage,duration,date)values("' +
     video_id +
     '","' +
     barrage +
     '","' +
     duration +
+    '","' +
+    date +
     '")';
   try {
     // 把弹幕加入数据库

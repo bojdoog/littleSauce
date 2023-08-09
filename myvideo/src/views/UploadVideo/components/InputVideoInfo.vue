@@ -3,16 +3,18 @@
     <div class="input-frames">
       <div class="line">
         <div class="font1"><span style="color: red">*</span>标题:</div>
-        <input type="text" ref="titleInput" />
+        <input type="text" ref="titleInput" placeholder="请输入标题" />
       </div>
       <div class="line">
         <div class="font1"><span style="color: red">*</span>上传封面:</div>
         <div
-          id="upload-icon"
+          class="upload-icon"
           ref="uploadIcon"
           @click="uploadFile"
           v-if="!hasPoster"
         >
+          <div class="row item"></div>
+          <div class="column item"></div>
           <input
             type="file"
             name=""
@@ -200,44 +202,44 @@ function completeDate(value: number) {
         margin-right: 60px;
       }
       input {
+        color: #505050;
         width: 550px;
         height: 40px;
-        font-size: 25px;
-        padding: 0 12px;
+        font-size: 22px;
+        padding: 0 15px;
         border: none;
         outline: none;
         border-radius: 10px;
-        background-color: rgba(227, 222, 222, 0.642);
-        box-shadow: 1px 0px 22px 0px rgb(58, 57, 57);
+        background-color: rgb(247, 206, 175);
+        box-shadow: 10px 10px 20px rgb(229, 157, 103);
+        &::placeholder {
+          font-size: 18px;
+          color: #898989;
+        }
       }
     }
-    #upload-icon {
+    .upload-icon {
       cursor: pointer;
-      width: 100px;
-      height: 100px;
+      width: 150px;
+      height: 80px;
       position: relative;
-      background-color: rgba(227, 222, 222, 0.642);
-      box-shadow: 1px 0px 22px 0px rgb(58, 57, 57);
-      &:before,
-      &:after {
-        content: "";
+      background-color: rgb(247, 206, 175);
+      box-shadow: 10px 10px 20px rgb(229, 157, 103);
+      .item {
         position: absolute;
-        z-index: -1;
-        background: #090909;
+        background-color: #fff;
       }
-      &:before {
-        left: 50%;
-        width: 2%;
-        margin-left: -1%;
-        margin-top: 10%;
-        height: 80%;
+      .row {
+        top: 38px;
+        left: 10px;
+        width: 130px;
+        height: 4px;
       }
-      &:after {
-        top: 50%;
-        height: 2%;
-        margin-top: -1%;
-        margin-left: 10%;
-        width: 80%;
+      .column {
+        top: 5px;
+        left: 73px;
+        width: 4px;
+        height: 70px;
       }
       input[type="file"] {
         display: none;

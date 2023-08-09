@@ -654,6 +654,7 @@ watch(isEnd, (newValue, oldValue) => {
 const _addEventListener = () => {
   document.addEventListener("keydown", (event) => {
     console.log(event, "keyword");
+    if (event.target.tagName === "INPUT") return;
     if (event.code === "Space") {
       playBtnfn();
     } else if (event.code === "KeyF") {
@@ -677,7 +678,7 @@ const _removeEventListener = () => {
     console.log("移除监听成功");
   });
 };
-const changeVideoPlaybackRate = () => {
+const changeVideoPlaybackRate = async () => {
   // 所有li倍速框的集合数组
   playbackrateMenuItem = document.querySelectorAll(".playbackrate-menu-item");
   // 全局定义上一次点击
@@ -705,6 +706,7 @@ const changeVideoPlaybackRate = () => {
   const initSpeedItem = document.querySelector(
     `li[data-playbackRate='${lastClick}']`
   );
+  await nextTick();
   initSpeedItem.style.color = "#00AEEC";
 };
 
@@ -733,7 +735,7 @@ const showControls = () => {
     }, 2000);
   } else {
     timeout = setTimeout(async () => {
-      console.log(controls);
+      await nextTick();
       controls.value.style.opacity = 0;
       video.value.style.cursor = "none";
       timeout = null;
@@ -902,6 +904,7 @@ const closeSounds = () => {
     z-index: 0;
     pointer-events: none;
     ::v-deep .dmbox {
+      white-space: nowrap; /* Prevents text from wrapping */
       cursor: pointer;
       pointer-events: auto;
       position: absolute;
