@@ -101,24 +101,29 @@ export default {
     const loading = ref(false);
     const delay = (ms: number) =>
       new Promise((resolve, reject) => setTimeout(resolve, ms));
-    http.get("/video/allInfo").then(function (res: any) {
-      // 处理成功情况
-      loading.value = true;
-      console.log(res, "res");
-      res.data.data.forEach((e: any) => {
-        e.date =
-          e.date.split(" ")[0].split("-")[1] +
-          "-" +
-          e.date.split(" ")[0].split("-")[2];
+    http
+      .get("/video/allInfo")
+      .then(function (res: any) {
+        // 处理成功情况
+        loading.value = true;
+        console.log(res, "res");
+        res.data.data.forEach((e: any) => {
+          e.date =
+            e.date.split(" ")[0].split("-")[1] +
+            "-" +
+            e.date.split(" ")[0].split("-")[2];
 
-        videosInfo.push(e);
+          videosInfo.push(e);
+        });
+        console.log(res.data.barragesNumArr, "videosInfo");
+        let i = 0;
+        res.data.barragesNumArr.forEach((e: any) => {
+          videosInfo[i++].barragesNum = e.barragesNum;
+        });
+      })
+      .catch((e: any) => {
+        console.log(e);
       });
-      console.log(res.data.barragesNumArr, "videosInfo");
-      let i = 0;
-      res.data.barragesNumArr.forEach((e: any) => {
-        videosInfo[i++].barragesNum = e.barragesNum;
-      });
-    });
     let resource_src = ref("");
     onMounted(async () => {
       resource_src.value = envMap["resource"];

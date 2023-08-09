@@ -117,7 +117,7 @@ import {
   verifyUsername,
   _verifyAccount,
   handleRegister,
-  getUserInfo,
+  loginAndGetInfo,
 } from "@/api";
 import { useRouter } from "vue-router";
 import { ElMessage } from "element-plus";
@@ -240,7 +240,7 @@ const _handleRegister = () => {
   }
 };
 const handleLogin = (loginInfo: loginInfo) => {
-  getUserInfo(loginInfo).then((res) => {
+  loginAndGetInfo(loginInfo).then((res) => {
     if (res.data.code === -1) {
       ElMessage({
         message: res.data.message,
@@ -251,9 +251,7 @@ const handleLogin = (loginInfo: loginInfo) => {
       if (res.data.status === 200) {
         Cookie.set("USER_TOKEN", res.data.token);
         let _userInfo = {
-          uid: res.data.userInfo.uid,
-          headsculpture_src: res.data.userInfo.headsculpture,
-          username: res.data.userInfo.username,
+          ...res.data.userInfo,
           menu: res.data.menu,
         };
         let userInfo = JSON.stringify(_userInfo);

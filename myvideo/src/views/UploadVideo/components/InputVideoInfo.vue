@@ -7,15 +7,26 @@
       </div>
       <div class="line">
         <div class="font1"><span style="color: red">*</span>上传封面:</div>
-        <div id="upload-icon" ref="uploadIcon" @click="uploadFile">
+        <div
+          id="upload-icon"
+          ref="uploadIcon"
+          @click="uploadFile"
+          v-if="!hasPoster"
+        >
           <input
             type="file"
             name=""
             ref="uploadInput"
-            @input="handleuploadFiles"
+            @change="handleuploadFiles"
           />
-          <!-- <img src="" class="poster" /> -->
         </div>
+        <img
+          alt="封面"
+          @click="uploadFile"
+          ref="imgPoster"
+          class="img-poster"
+          v-else
+        />
         <el-tooltip
           class="box-item"
           effect="dark"
@@ -36,7 +47,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from "vue";
+import { computed, nextTick, ref } from "vue";
 import { useRoute } from "vue-router";
 import { useStore } from "vuex";
 import { uploadVideoInfo } from "@/api";
@@ -49,13 +60,14 @@ const uploadIcon = ref();
 const uploadInput = ref();
 const titleInput = ref();
 const hasPoster = ref(false);
+const imgPoster = ref();
 
 const uploadFile = () => {
   uploadInput.value.click();
 };
 let file: any;
 let fileInfo;
-const handleuploadFiles = () => {
+const handleuploadFiles = async () => {
   if (!uploadInput.value.files[0]) {
     hasPoster.value = false;
     return;
@@ -64,9 +76,10 @@ const handleuploadFiles = () => {
   hasPoster.value = true;
   // 获取文件夹
   file = uploadInput.value.files[0];
-  uploadInput.value.addEventListener("load", () => {
-    console.log(111);
-  });
+
+  const objectURL = URL.createObjectURL(file);
+  await nextTick();
+  imgPoster.value.src = objectURL;
 
   fileInfo = {
     fileName: file.name,
@@ -78,13 +91,16 @@ const handleuploadFiles = () => {
     return;
   }
 };
-const emits = defineEmits(["uploadVideoFile"]);
 const submitVideoInfo = () => {
   if (titleInput.value.value === "" || !file) {
     alert("标题不能为空,封面必须上传");
     return;
   }
-  emits("uploadVideoFile");
+  if (!store.state.tab.completeVideoUpload) {
+    alert("请等待视频上传完成再提交");
+    return;
+  }
+  _uploadVideoInfo();
 };
 const _uploadVideoInfo = () => {
   let formData = new FormData();
@@ -226,11 +242,11 @@ function completeDate(value: number) {
       input[type="file"] {
         display: none;
       }
-      .poster {
-        position: absolute;
-        width: 100px;
-        height: 100px;
-      }
+    }
+    .img-poster {
+      width: 150px;
+      height: 80px;
+      border-radius: 5%;
     }
     .poster-file-name {
       margin-left: 50px;

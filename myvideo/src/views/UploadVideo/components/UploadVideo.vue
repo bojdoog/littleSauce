@@ -1,28 +1,38 @@
 <template>
   <div class="upload-video">
     <div id="upload-icon" ref="uploadIcon" @click="uploadFile">
-      <input type="file" name="" ref="uploadInput" @input="showInput" />
+      <input type="file" name="" ref="uploadInput" @change="showInput" />
     </div>
     <div class="upload-progress" v-if="store.state.tab.hasUploadVideo">
       <div class="fileName">视频文件名：{{ file.name }}</div>
       <div class="progress">{{ upLoadProgress }}</div>
     </div>
-    <div class="describe" v-else>请上传视频</div>
+    <div class="describe" v-else>
+      请上传视频<br /><span style="font-size: 8px"
+        >不要上传大文件视频，因为流量有限呜呜</span
+      >
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { onBeforeMount, onMounted, ref } from "vue";
-import { uploadVideo } from "@/api";
+interface fileChunks {
+  hash: string;
+  chunk: Blob;
+}
+import { onBeforeMount, onMounted, reactive, ref } from "vue";
+import { uploadVideo, mergeChunks, checkPoint } from "@/api";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 import Cookie from "js-cookie";
 import http from "@/utils/request";
 import envMap from "@/config/app.config";
 import { ElMessage } from "element-plus";
+import CryptoJS from "crypto-js";
 
 const store = useStore();
 const router = useRouter();
+let fileChunks = reactive<fileChunks[]>([]);
 
 const file = ref();
 const uploadIcon = ref();
@@ -33,11 +43,81 @@ const uploadFile = () => {
 };
 
 let upLoadProgress = ref("");
-let formData = new FormData();
-let unauditedVideo_src: string;
-const emits = defineEmits(["unloadVideoInfo"]);
 
-const showInput = () => {
+// 得到hash值
+function generateSHA1Hash(input: string) {
+  const sha1Hash = CryptoJS.SHA1(input).toString();
+  return sha1Hash;
+}
+
+let _hash = generateSHA1Hash("littleSauce");
+
+let pool: Promise<any>[] = []; //Concurrent pool
+let max = 3; //Maximum concurrency
+const uploadList = async () => {
+  // 所有上传切片的组
+  const uploadTasks = [];
+  for (let i = 0; i < fileChunks.length; i++) {
+    console.log(i, fileChunks.length, "iiiiiiiiiii");
+
+    let item = fileChunks[i];
+    let formData = new FormData();
+    formData.append("filename", file.value.name.slice(0, -4));
+    formData.append("hash", `${item.hash}`);
+    formData.append("chunk", item.chunk);
+
+    // 上传分片
+    let task = uploadVideo(formData);
+    uploadTasks.push(task);
+    // 从并发池中移除已经完成的请求
+    task.then(() => {
+      let index = pool.findIndex((t) => t === task);
+      pool.splice(index);
+    });
+    // 把请求放入并发池中，如果已经达到最大并发量
+    pool.push(task);
+    if (pool.length === max) {
+      // 通过一个，才循环继续
+      await Promise.race(pool);
+    }
+  }
+  // 等待所有分片上传完成
+  await Promise.all(uploadTasks).catch((e: any) => {
+    console.log(e);
+    ElMessage({
+      message: "视频上传失败",
+      type: "error",
+      duration: 3000,
+    });
+  });
+  ElMessage({
+    showClose: true,
+    message: "视频上传完成",
+    type: "success",
+    duration: 8000,
+  });
+  mergeChunks({
+    filename: file.value.name.slice(0, -4),
+  })
+    .then((res: any) => {
+      ElMessage({
+        message: res.data.message,
+        type: "success",
+        duration: 3000,
+      });
+      // 合并成功后，store存储视频已完成上传
+      store.commit("changeCompleteVideoUpload", true);
+    })
+    .catch((e: any) => {
+      ElMessage({
+        message: "合并失败",
+        type: "error",
+        duration: 3000,
+      });
+    });
+};
+
+const showInput = async () => {
   if (!uploadInput.value.files[0]) return;
   file.value = uploadInput.value.files[0];
   if (!/mp4/i.test(file.value.type)) {
@@ -45,10 +125,44 @@ const showInput = () => {
     uploadInput.value.outerHTML = uploadInput.value.outerHTML;
     return;
   }
-  router.push({ params: { videoName: file.value.name } });
-  7;
-  store.commit("changeHasUploadVideo", true);
+  await checkPoint({
+    filename: file.value.name.slice(0, -4),
+  }).then((res) => {
+    const { message, point, hash } = res.data;
+    ElMessage({
+      message: message,
+      type: "success",
+      duration: 3000,
+    });
+    // 进行分块
+    fileChunks = [...sliceFile(file.value, point, hash)];
+    router.push({ params: { videoName: file.value.name } });
+    uploadList();
+    store.commit("changeHasUploadVideo", true);
+  });
 };
+
+const sliceFile = (file: File, point: number, fileIndex: number) => {
+  let Blob = file.slice(point);
+  // 文件分片
+  let size = 1024 * 1024 * 5; // 5mb
+  let _fileChunks = [];
+  let index = fileIndex;
+  for (let cur = 0; cur < Blob.size; cur += size) {
+    _fileChunks.push({
+      hash: `${index++}`,
+      chunk: Blob.slice(cur, cur + size),
+    });
+  }
+  return _fileChunks;
+};
+
+onBeforeMount(() => {
+  store.commit("changeHasUploadVideo", false);
+});
+onMounted(() => {
+  store.commit("changeCompleteVideoUpload", false);
+});
 
 const handleuploadFiles = () => {
   // 打开输入信息框
@@ -56,79 +170,69 @@ const handleuploadFiles = () => {
   // if (!/(PNG|JPG|JPRG)/i.test(file.type))
   isUploading.value = true;
 
-  formData.append("file", file.value);
-  formData.append("uid", JSON.parse(Cookie.get("USER_INFO")).uid);
+  // const uploadList = fileChunks.map((item) => {
+  //   let formData = new FormData();
+  //   formData.append("uid", JSON.parse(Cookie.get("USER_INFO")).uid);
+  //   formData.append("filename", file.value.name);
+  //   formData.append("hash", `${item.hash}`);
+  //   formData.append("chunk", item.chunk);
+  //   return http({
+  //     method: "POST",
+  //     url: "/upload/uploadVideo",
+  //     data: formData,
+  //     headers: {
+  //       "Content-Type": "multipart/form-data",
+  //     },
+  //   });
+  // });
+
+  // Promise.all(uploadList).then(async (res) => {
+  //   console.log(res, "res");
+  //   await http({
+  //     method: "get",
+  //     url: "/merge",
+  //     params: {
+  //       filename: file.value.name,
+  //     },
+  //   });
+  // });
+
   // 把文件发给服务器
-  http({
-    url: "/upload/uploadVideo",
-    method: "POST",
-    data: formData,
-    headers: {
-      "Content-Type": "multipart/form-data",
-    },
-    onUploadProgress: function (progressEvent: any) {
-      console.log(progressEvent, "progressEvent");
-      //原生获取上传进度的事件
-      if (progressEvent.lengthComputable) {
-        //属性lengthComputable主要表明总共需要完成的工作量和已经完成的工作是否可以被测量
-        //如果lengthComputable为false，就获取不到progressEvent.total和progressEvent.loaded
-        upLoadProgress.value =
-          (progressEvent.loaded / progressEvent.total) * 100 + "%"; //实时获取上传进度
-      }
-    },
-  }).then((res: any) => {
-    const { code, msg } = res.data;
-    if (code === 0) {
-      ElMessage({
-        message: msg,
-        type: "success",
-        duration: 3000,
-      });
-      emits("unloadVideoInfo");
-    } else if (code === -1) {
-      ElMessage({
-        message: msg,
-        type: "error",
-        duration: 3000,
-      });
-    }
-  });
+  // http({
+  //   url: "/upload/uploadVideo",
+  //   method: "POST",
+  //   data: formData,
+  //   headers: {
+  //     "Content-Type": "multipart/form-data",
+  //   },
+  //   onUploadProgress: function (progressEvent: any) {
+  //     console.log(progressEvent, "progressEvent");
+  //     //原生获取上传进度的事件
+  //     if (progressEvent.lengthComputable) {
+  //       //属性lengthComputable主要表明总共需要完成的工作量和已经完成的工作是否可以被测量
+  //       //如果lengthComputable为false，就获取不到progressEvent.total和progressEvent.loaded
+  //       upLoadProgress.value =
+  //         (progressEvent.loaded / progressEvent.total) * 100 + "%"; //实时获取上传进度
+  //     }
+  //   },
+  // }).then((res: any) => {
+  //   const { code, msg } = res.data;
+  //   if (code === 0) {
+  //     ElMessage({
+  //       message: msg,
+  //       type: "success",
+  //       duration: 3000,
+  //     });
+  //     emits("unloadVideoInfo");
+  //   } else if (code === -1) {
+  //     ElMessage({
+  //       message: msg,
+  //       type: "error",
+  //       duration: 3000,
+  //     });
+  //   }
+  // });
 };
-defineExpose({ handleuploadFiles });
-
-// 获取文件大小
-function getfilesize(size: number) {
-  //把字节转换成正常文件大小
-  if (!size) return "";
-  var num = 1024.0; //byte
-  if (size < num) return size + "B";
-  if (size < Math.pow(num, 2)) return (size / num).toFixed(2) + "KB"; //kb
-  if (size < Math.pow(num, 3))
-    return (size / Math.pow(num, 2)).toFixed(2) + "MB"; //M
-  if (size < Math.pow(num, 4))
-    return (size / Math.pow(num, 3)).toFixed(2) + "G"; //G
-  return (size / Math.pow(num, 4)).toFixed(2) + "T"; //T
-}
-
-//
-function getObjectURL(file: any) {
-  let url = null;
-  if (window.createObjectURL != undefined) {
-    // basic
-    url = window.createObjectURL(file);
-  } else if (window.webkitURL != undefined) {
-    // webkit or chrome
-    url = window.webkitURL.createObjectURL(file);
-  } else if (window.URL != undefined) {
-    // mozilla(firefox)
-    url = window.URL.createObjectURL(file);
-  }
-  return url;
-}
-onBeforeMount(() => {
-  store.commit("changeHasUploadVideo", false);
-});
-onMounted(() => {});
 </script>
 
 <style lang="scss" scoped>

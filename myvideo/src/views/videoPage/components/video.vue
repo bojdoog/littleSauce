@@ -54,19 +54,13 @@
     </div>
     <!-- ------------------------------------------------------------------------------------------------------------------------------------------- -->
     <!-- 以下为视频栏 -->
-    <div
-      class="player"
-      v-loading="loading"
-      :element-loading-text="
-        loading === 1 ? '正在加载视频信息' : '正在加载视频数据'
-      "
-    >
+    <div class="player">
       <video
-        @mousemove="showControls"
-        @mouseout="closeControls"
+        @mousemove.capture="showControls"
+        @mouseout.capture="closeControls"
         :src="video_src"
         ref="video"
-        @click="playBtnfn"
+        @click.capture="playBtnfn"
         @loadstart="loadstart($event)"
         @durationchange="durationchange($event)"
         @loadedmetadata="loadedmetadata($event)"
@@ -74,11 +68,20 @@
         @canplay="getVidDur($event)"
         @timeupdate="videoPlay"
         @play="play"
+        @waiting="waitingdata"
         @ended="() => (isEnd = true)"
         @keyup="keyword($event)"
         @progress="waitingLoading"
         @error="videoErr($event)"
       ></video>
+      <div
+        class="loadingPage"
+        v-loading="loading"
+        :element-loading-text="
+          loading === 1 ? '正在加载视频信息' : '正在加载视频数据'
+        "
+        v-show="loading"
+      ></div>
       <div class="isEnd" v-show="isEnd">
         <div class="endInfo" @click="replay">
           <el-icon size="40px" color="white"><VideoPlay /></el-icon
@@ -99,6 +102,7 @@
           <div class="progress-box2">
             <!-- 总进度 -->
             <div class="progress" ref="mainProgress">
+              <!-- 缓冲进度条 -->
               <div class="buffer-progress" ref="bufferProgress"></div>
               <!-- 当前进度 -->
               <div class="curr-progress" ref="currProgress"></div>
@@ -218,6 +222,7 @@
         </div>
       </div>
     </div>
+    <!-- <Vue3VideoPlay width="800px" title="钢铁侠" :src="video_src" /> -->
     <!-- 以上为视频 -->
     <!-- -------------------------------------------------------------------------------------------------------------------------------------------  -->
     <!-- 视频下面的一栏 -->
@@ -231,6 +236,7 @@
 </template>
 
 <script setup>
+import Vue3VideoPlay from "vue3-video-play";
 import frameUnderVideo from "./frameUnderVideo.vue";
 import http from "../../../utils/request";
 import {
@@ -244,6 +250,8 @@ import {
 import { useRoute } from "vue-router";
 import envMap from "@/config/app.config";
 import { _speedList } from "../config";
+
+const video_src = ref();
 
 const route = useRoute();
 var tTime = 0;
@@ -270,7 +278,6 @@ let isShowControl = ref(false);
 const soundsModel = ref();
 const soundsInput = ref();
 let soundsVal = ref(localStorage.getItem("soundsVal") || "100");
-const video_src = ref();
 let loading = ref(1);
 
 const mainProgress = ref();
@@ -311,7 +318,6 @@ http
     console.log(res.data.data, "111");
     video_src.value = resource_src + res.data.videoInfo.video_src;
     views.value = res.data.videoInfo.views;
-    barrages.value = res.data.videoInfo.barrages;
     title.value = res.data.videoInfo.title;
     document.title = title.value;
     date.value = res.data.videoInfo.date;
@@ -355,7 +361,7 @@ const playBtnfn = () => {
 const keyword = (e) => {
   console.log(e);
 };
-watch(isOpen, (newValue, oldValue) => {
+watch(isOpen, async (newValue, oldValue) => {
   if (newValue === true) {
     video.value.play();
   } else {
@@ -503,6 +509,10 @@ const getVidDur = async (e) => {
   totalTime.value.innerHTML = m + ":" + s;
 };
 
+const waitingdata = () => {
+  loading.value = 2;
+};
+
 // 缓冲进度，当视频播放到一定位置时，再次进行缓冲并调用此函数
 const waitingLoading = () => {
   console.log("缓冲中...");
@@ -512,7 +522,7 @@ const waitingLoading = () => {
   let end = video.value.buffered.length && video.value.buffered.end(length - 1);
   let value = end / tTime;
   bufferProgress.value.style.width = value * 100 + "%";
-  // console.log("缓冲时长", "buffered", length, "end", end);
+  console.log("缓冲时长", "buffered", length, "end", end);
 };
 const configDM = (dmbox, dmInfo) => {
   dmbox.className = "dmbox";
@@ -877,6 +887,11 @@ const closeSounds = () => {
   background: #000;
   background-size: auto 100%;
   position: relative;
+  .loadingPage {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+  }
   .dm-container {
     overflow: hidden;
     position: absolute;
@@ -934,6 +949,7 @@ const closeSounds = () => {
     height: 100%;
     display: block;
     margin: 0 auto;
+    position: absolute;
   }
   // &:hover .controls {
   //     opacity: 1;

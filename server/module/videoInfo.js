@@ -4,12 +4,11 @@ const db = require("../helper/db");
 
 const fs = require("fs");
 const multer = require("multer");
-const { log } = require("console");
 
-// const unauditedPosterPath = "/var/www/html/UnauditedPoster";
+const unauditedPosterPath = "/var/www/html/UnauditedPoster";
 
-const unauditedPosterPath =
-  "D:\\code-qianduan\\VIDEO_PROJECT\\myvideo\\public\\UnauditedPoster";
+// const unauditedPosterPath =
+//   "D:\\code-qianduan\\VIDEO_PROJECT\\myvideo\\public\\UnauditedPoster";
 
 var storage = multer.diskStorage({
   // 函数的形式

@@ -122,6 +122,7 @@ onMounted(async () => {
 
 <style lang="scss" scoped>
 .container {
+  padding: 50px 0 0 50px;
   .naudited-videos {
     margin: 30px 0px 60px 30px;
     width: 1100px;

@@ -4,6 +4,7 @@ export default {
     return {
       isUploading: false,
       hasUploadVideo: false,
+      completeVideoUpload: false,
     };
   },
   getters: {},
@@ -13,6 +14,9 @@ export default {
     },
     changeHasUploadVideo(state: State, val: boolean) {
       state.hasUploadVideo = val;
+    },
+    changeCompleteVideoUpload(state: State, val: boolean) {
+      state.completeVideoUpload = val;
     },
   },
 };

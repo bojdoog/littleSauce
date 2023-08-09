@@ -9,6 +9,25 @@ const { expressjwt: expressJWT } = require("express-jwt");
 // TODO_02：定义 secret 密钥，建议将密钥命名为 secretKey
 const secretKey = "zhl No.1 ~0.0~";
 
+const multer = require("multer");
+const fs = require("fs");
+const unauditedHeadsculpturePath = "/var/www/html/headsculpture";
+
+// const unauditedHeadsculpturePath = "D:\\code-qianduan\\VIDEO_PROJECT\\myvideo\\public\\headsculpture";
+
+var storage = multer.diskStorage({
+  // 函数的形式
+  destination: function (req, file, cb) {
+    // 函数接收三个参数
+    // req 请求报文
+    // file 上传的文件属性对象
+    // cb 回调函数
+    // 回调函数参数信息
+    // cb(错误信息,文件存储路径信息)
+    cb(null, unauditedHeadsculpturePath);
+  },
+});
+
 const adminMenu = [
   {
     path: "/home",
@@ -87,7 +106,7 @@ const userMenu = [
 router.post("/api/login", async (req, res) => {
   const user = req.body;
   const $query =
-    "select username,uid,headsculpture,isAdmin from users where binary account ='" +
+    "select username,uid,headsculpture as headsculpture_src,isAdmin,profile from users where binary account ='" +
     user.account +
     "'and password ='" +
     user.password +
@@ -97,7 +116,7 @@ router.post("/api/login", async (req, res) => {
     if (!userInfo) {
       res.statusCode = 401;
       return res.json({
-        code: 0,
+        code: -1,
         userInfo: null,
         message: "账号密码存在错误",
         status: 401,
@@ -132,8 +151,72 @@ router.post("/api/login", async (req, res) => {
     }
   } catch (e) {
     console.log(e);
-    res.json({ code: -1, data: [], message: "数据库报错", reason: e });
+    res.json({ code: -1, data: [], message: "服务器报错", reason: e });
   }
 });
+
+router.post("/api/getUserInfo", async (req, res) => {
+  const { uid } = req.body;
+  console.log(uid, "uid");
+  const $query =
+    "select username,uid,headsculpture as headsculpture_src,isAdmin,profile from users where binary uid ='" +
+    uid +
+    "'";
+
+  try {
+    const [userInfo] = await db($query);
+    if (!userInfo) {
+      res.statusCode = 401;
+      return res.json({
+        code: -1,
+        userInfo: null,
+        message: "uid出错",
+        status: 401,
+      });
+    }
+    res.json({
+      code: 0,
+      userInfo,
+      message: "获取用户信息成功",
+      status: 200,
+    });
+  } catch (e) {
+    console.log(e);
+    res.statusCode = 500;
+    res.json({ code: -1, data: [], message: "获取用户信息失败", reason: e });
+  }
+});
+
+router.post(
+  "/updateUserInfo",
+  multer({ storage }).single("file"),
+  async (req, res) => {
+    const { uid, username, profile, filename } = req.body;
+    console.log(uid, username, profile, filename);
+    try {
+      if (filename) {
+        const file = req.file;
+        console.log(file, "file");
+        file.originalname = Buffer.from(file.originalname, "latin1").toString(
+          "utf8"
+        );
+        fs.renameSync(
+          `${unauditedHeadsculpturePath}/${file.filename}`,
+          `${unauditedHeadsculpturePath}/${file.originalname}`
+        );
+        file.path = `${unauditedHeadsculpturePath}/${file.originalname}`;
+        const $changeHeadsculpture = `update users set headsculpture='/headsculpture/${file.originalname}' where uid = '${uid}'`;
+
+        await db($changeHeadsculpture);
+      }
+      const $updateInfo = `update users set username='${username}',profile = '${profile}' where uid = '${uid}'`;
+      await db($updateInfo);
+      res.json({ code: 0, message: "success" });
+    } catch (e) {
+      console.log(e);
+      res.json({ code: -1, message: "fail", reason: e });
+    }
+  }
+);
 
 module.exports = router;

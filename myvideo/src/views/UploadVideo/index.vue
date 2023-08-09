@@ -1,11 +1,8 @@
 <template>
   <div class="totalPage">
     <div class="upload-video-area">
-      <uploadVideo ref="uploadVideo" @unloadVideoInfo="unloadVideoInfo" />
-      <inputVideoInfo
-        @uploadVideoFile="uploadVideoFile"
-        ref="uploadVideoInfo"
-      />
+      <uploadVideo />
+      <inputVideoInfo />
     </div>
   </div>
 </template>
@@ -14,14 +11,6 @@
 import { ref } from "vue";
 import UploadVideo from "./components/UploadVideo.vue";
 import InputVideoInfo from "./components/InputVideoInfo.vue";
-const uploadVideo = ref();
-const uploadVideoInfo = ref();
-const uploadVideoFile = () => {
-  uploadVideo.value.handleuploadFiles();
-};
-const unloadVideoInfo = () => {
-  uploadVideoInfo.value._uploadVideoInfo();
-};
 </script>
 
 <style lang="scss" scoped>
@@ -30,8 +19,8 @@ const unloadVideoInfo = () => {
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
-  margin-left: 5vw;
-  margin-top: 5vh;
+  margin-left: 8vw;
+  margin-top: 8vh;
   .upload-video-area {
     align-self: flex-start;
   }

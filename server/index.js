@@ -59,6 +59,7 @@ app.use("/userInfo", require(__dirname + "/module/userInfo"));
 app.use("/upload", require(__dirname + "/module/upload"));
 app.use("/videoInfo", require(__dirname + "/module/videoInfo"));
 app.use("/register", require(__dirname + "/module/register"));
+app.use("/audite", require(__dirname + "/module/auditedVideo"));
 
 app.use((err, req, res, next) => {
   // 错误是由token解析失败导致的
@@ -78,5 +79,5 @@ app.use((err, req, res, next) => {
 });
 
 app.listen(443, () => {
-  console.log("服务器运行在http://127.0.0.1:443");
+  console.log("服务器运行在http://111.231.7.251:443");
 });

@@ -28,10 +28,11 @@ import Cookie from "js-cookie";
 import { useRouter, useRoute } from "vue-router";
 import { ElMessage } from "element-plus";
 import envMap from "@/config/app.config";
+import bus from "@/bus";
 let resource_src = ref("");
 const router = useRouter();
 const route = useRoute();
-let userInfo: any = reactive({});
+let userInfo = ref<any>({});
 const handleClick = (command: string) => {
   if (command === "logout") {
     router.push({ name: "Login" });
@@ -43,8 +44,11 @@ const handleClick = (command: string) => {
   }
 };
 onMounted(() => {
-  userInfo = JSON.parse(Cookie.get("USER_INFO"));
-  if (!userInfo.headsculpture_src && route.name === "Home") {
+  bus.on("updateHeadsculpture", () => {
+    userInfo.value = JSON.parse(Cookie.get("USER_INFO"));
+  });
+  userInfo.value = JSON.parse(Cookie.get("USER_INFO"));
+  if (!userInfo.value.headsculpture_src && route.name === "Home") {
     ElMessage({
       message: "您还没有设置头像",
       type: "warning",
@@ -53,7 +57,6 @@ onMounted(() => {
     });
   }
   resource_src.value = envMap["resource"];
-  console.log(resource_src);
 });
 </script>
 

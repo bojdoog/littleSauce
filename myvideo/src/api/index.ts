@@ -2,8 +2,12 @@ import http from "../utils/request";
 
 // 请求首页数据
 
-export const getUserInfo = (data: any) => {
+export const loginAndGetInfo = (data: any) => {
   return http.post("/userInfo/api/login", data);
+};
+
+export const getUserInfo = (data: any) => {
+  return http.post("/userInfo/api/getUserInfo", data);
 };
 
 export const uploadVideo = (data: any) => {
@@ -11,11 +15,20 @@ export const uploadVideo = (data: any) => {
     headers: {
       "Content-Type": "multipart/form-data",
     },
+    timeout: 30000,
   });
 };
 
+export const mergeChunks = (params: any) => {
+  return http.get("/upload/merge", { params });
+};
+
+export const checkPoint = (params: any) => {
+  return http.get("/upload/checkPoint", { params });
+};
+
 export const auditedVideo = (params: any) => {
-  return http.get("/upload/auditedVideo", {
+  return http.get("/audite/auditeVideo", {
     params: {
       isPass: params.isPass,
       video_id: params.video_id,
@@ -25,7 +38,7 @@ export const auditedVideo = (params: any) => {
 };
 
 export const getUnauditedVideo = () => {
-  return http.get("/upload/getUnauditedVideo");
+  return http.get("/audite/getUnauditedVideo");
 };
 
 export const uploadVideoInfo = (data: any) => {
@@ -46,4 +59,8 @@ export const _verifyAccount = (data: any) => {
 
 export const handleRegister = (data: any) => {
   return http.post("/register/register", data);
+};
+
+export const updateUserInfo = (data: any) => {
+  return http.post("/userInfo/updateUserInfo", data);
 };

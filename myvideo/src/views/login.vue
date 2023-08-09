@@ -66,7 +66,7 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import { onBeforeRouteLeave, useRouter } from "vue-router";
-import { getUserInfo } from "@/api";
+import { loginAndGetInfo } from "@/api";
 import { ElMessage } from "element-plus";
 import Cookie from "js-cookie";
 
@@ -108,7 +108,7 @@ const loginFn = () => {
       account: accountVal.value,
       password: passwordVal.value,
     };
-    getUserInfo(loginInfo)
+    loginAndGetInfo(loginInfo)
       .then((res) => {
         if (res.data.code === -1) {
           ElMessage({
@@ -119,9 +119,7 @@ const loginFn = () => {
         } else {
           Cookie.set("USER_TOKEN", res.data.token);
           let _userInfo = {
-            uid: res.data.userInfo.uid,
-            headsculpture_src: res.data.userInfo.headsculpture,
-            username: res.data.userInfo.username,
+            ...res.data.userInfo,
             menu: res.data.menu,
           };
           let userInfo = JSON.stringify(_userInfo);
@@ -144,6 +142,7 @@ const loginFn = () => {
       });
   }
 };
+
 const registerFn = () => {
   router.push({ name: "Register" });
 };

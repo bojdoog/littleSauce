@@ -78,11 +78,11 @@ http.interceptors.response.use(
     if (error.response) {
       const status = error.response.status;
       const wrongReason = getErrorMessage(status);
-      ElMessage({
-        message: error.response.data.message,
-        type: "error",
-        duration: 3000,
-      });
+      // ElMessage({
+      //   message: error.response.data.message,
+      //   type: "error",
+      //   duration: 3000,
+      // });
       if (status === 401) {
         router.push("login");
       }

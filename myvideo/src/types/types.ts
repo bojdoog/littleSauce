@@ -1,6 +1,7 @@
 interface State {
   isUploading: boolean;
   hasUploadVideo: boolean;
+  completeVideoUpload: boolean;
 }
 
 interface videoinfo {
