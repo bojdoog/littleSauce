@@ -76,6 +76,7 @@ const sendDm = async () => {
     inputDm.value.value = null;
   });
 };
+defineExpose({ sendDm });
 </script>
 
 <style lang="scss" scoped>

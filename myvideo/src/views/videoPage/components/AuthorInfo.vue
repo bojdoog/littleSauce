@@ -41,7 +41,15 @@
       <div class="dm-list">
         <div class="dm-info-row" v-for="item in dmInfo" :key="item.id">
           <div class="dm-duration">{{ item.duration }}</div>
-          <div class="dm-context">{{ item.barrage }}</div>
+          <el-tooltip
+            class="box-item"
+            effect="light"
+            :content="item.barrage"
+            placement="right-start"
+            :offset="8"
+          >
+            <div class="dm-context">{{ item.barrage }}</div>
+          </el-tooltip>
           <div class="dm-date">{{ item.date }}</div>
         </div>
       </div>
@@ -172,6 +180,7 @@ onMounted(async () => {
         text-align: center;
         width: 42px;
         margin-left: 15px;
+        cursor: pointer;
       }
       .dm-context {
         margin-left: 25px;
@@ -179,9 +188,11 @@ onMounted(async () => {
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
+        cursor: pointer;
       }
       .dm-date {
         margin-left: 20px;
+        cursor: pointer;
       }
     }
   }

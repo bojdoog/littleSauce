@@ -231,6 +231,7 @@
       :sendDmVideoDuration="sendDmVideoDuration"
       @getDuration="getDuration"
       @sendDmInfo="receiveDmInfo"
+      ref="frameUnderV"
     />
   </div>
 </template>
@@ -279,7 +280,7 @@ const soundsModel = ref();
 const soundsInput = ref();
 let soundsVal = ref(localStorage.getItem("soundsVal") || "100");
 let loading = ref(1);
-
+const frameUnderV = ref();
 const mainProgress = ref();
 let sendDmVideoDuration = ref();
 
@@ -654,7 +655,12 @@ watch(isEnd, (newValue, oldValue) => {
 const _addEventListener = () => {
   document.addEventListener("keydown", (event) => {
     console.log(event, "keyword");
-    if (event.target.tagName === "INPUT") return;
+    if (event.target.tagName === "INPUT") {
+      if (event.code === "Enter") {
+        frameUnderV.value.sendDm();
+      }
+      return;
+    }
     if (event.code === "Space") {
       playBtnfn();
     } else if (event.code === "KeyF") {
@@ -904,6 +910,10 @@ const closeSounds = () => {
     z-index: 0;
     pointer-events: none;
     ::v-deep .dmbox {
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
       white-space: nowrap; /* Prevents text from wrapping */
       cursor: pointer;
       pointer-events: auto;
