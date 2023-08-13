@@ -6,6 +6,7 @@ const db = require("../helper/db");
 const jwt = require("jsonwebtoken");
 const { expressjwt: expressJWT } = require("express-jwt");
 
+const loggerIp = require("../loggerIp");
 // TODO_02：定义 secret 密钥，建议将密钥命名为 secretKey
 const secretKey = "zhl No.1 ~0.0~";
 
@@ -218,5 +219,13 @@ router.post(
     }
   }
 );
+
+router.post("/api/loggerIp", (req, res) => {
+  const { ipAdress, userPHYAddress, date, userInfo } = req.body;
+  loggerIp.log(`用户: ${userInfo.username}, 登录时间: ${date}
+IP: ${ipAdress}, 所在地: ${userPHYAddress}
+`);
+  res.json("success");
+});
 
 module.exports = router;

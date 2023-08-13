@@ -64,3 +64,7 @@ export const handleRegister = (data: any) => {
 export const updateUserInfo = (data: any) => {
   return http.post("/userInfo/updateUserInfo", data);
 };
+
+export const uploadIpAddress = (data: any) => {
+  return http.post("/userInfo/api/loggerIp", data);
+};

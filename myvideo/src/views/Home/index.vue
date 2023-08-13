@@ -4,13 +4,8 @@
   </div>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 import videos from "./components/videos.vue";
-export default {
-  components: {
-    videos,
-  },
-};
 </script>
 
 <style lang="scss" scoped>

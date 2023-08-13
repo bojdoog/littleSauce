@@ -37,8 +37,8 @@
         </div>
       </template>
     </el-skeleton>
-    <div class="videos" id="videos" v-else>
-      <div class="everyvideo" v-for="item in videosInfo" :key="item.id">
+    <div class="videos" v-else id="videos">
+      <div class="everyvideo" v-for="item in showVideoList" :key="item.id">
         <router-link
           target="_blank"
           :to="{ name: 'VideoPage', query: { video_id: item.id } }"
@@ -93,7 +93,7 @@ import type { videoinfo } from "../../../types/types";
 import { useRouter } from "vue-router";
 import envMap from "@/config/app.config";
 import http from "@/utils/request";
-import { reactive, ref, nextTick, onMounted } from "vue";
+import { reactive, ref, nextTick, onMounted, computed } from "vue";
 export default {
   setup() {
     const router = useRouter();
@@ -101,12 +101,24 @@ export default {
     const loading = ref(false);
     const delay = (ms: number) =>
       new Promise((resolve, reject) => setTimeout(resolve, ms));
+    // 展示的行数
+    const showRowNum = 4;
+    // 初始加载的行数
+    const startRow = ref(0);
+    const endRow = ref(startRow.value + 4);
+    const videosNumInRow = ref();
+    const showVideoList = computed(() => {
+      return videosInfo.slice(0, endRow.value * videosNumInRow.value);
+    });
+    videosNumInRow.value = computed(() => {
+      return videosNumInRow.value === 0 ? 1 : videosNumInRow.value;
+    });
+    let videos: any;
     http
       .get("/video/allInfo")
-      .then(function (res: any) {
+      .then(async function (res: any) {
         // 处理成功情况
         loading.value = true;
-        console.log(res, "res");
         res.data.data.forEach((e: any) => {
           e.date =
             e.date.split(" ")[0].split("-")[1] +
@@ -115,19 +127,28 @@ export default {
 
           videosInfo.push(e);
         });
-        console.log(res.data.barragesNumArr, "videosInfo");
         let i = 0;
         res.data.barragesNumArr.forEach((e: any) => {
           videosInfo[i++].barragesNum = e.barragesNum;
         });
+        await nextTick();
+        videos = document.getElementById("videos");
+        const videosWidth = parseFloat(
+          window.getComputedStyle(videos).width.slice(0, -2)
+        );
+        videosNumInRow.value = Math.floor((videosWidth + 30) / 270);
       })
       .catch((e: any) => {
         console.log(e);
       });
     let resource_src = ref("");
     onMounted(async () => {
+      computeDivNum();
+      scrollLoadData();
       resource_src.value = envMap["resource"];
-      console.log(resource_src);
+      setInterval(() => {
+        console.log(showVideoList);
+      }, 500);
     });
     let video: any;
     let timeout: any;
@@ -140,13 +161,10 @@ export default {
         videosInfo.forEach(async (e) => {
           if (e.id === id && !miniVideo?.children[2]) {
             video = document.createElement("video");
-            console.log(video);
             video.src = resource_src.value + e.video_src;
             video.id = `touchVideo${id}`;
             video.preload = "auto";
-            video.poster = e.preview_src
-              ? e.preview_src
-              : "http://127.0.0.1:7000/previews/thumb_icon.png";
+            video.poster = e.preview_src;
             video.style.objectFit = "cover";
             video.style.width = "100%";
             video.style.height = "100%";
@@ -175,6 +193,34 @@ export default {
         });
       }, 300);
     };
+    const computeDivNum = () => {
+      window.addEventListener("resize", () => {
+        if (!videos) return;
+        const videosWidth = parseFloat(
+          window.getComputedStyle(videos).width.slice(0, -2)
+        );
+        videosNumInRow.value = Math.floor((videosWidth + 30) / 270);
+      });
+    };
+
+    let memoryScrollTop = 0;
+    const scrollLoadData = () => {
+      // 获取滚动容器元素
+      const scrollContainer = document.documentElement || document.body;
+
+      // 添加滚轮事件监听器
+      scrollContainer.addEventListener("wheel", (e) => {
+        if (scrollContainer.scrollTop - 110 < 0) {
+          startRow.value = 0;
+          endRow.value = showRowNum;
+          return;
+        }
+        if (memoryScrollTop > scrollContainer.scrollTop) return;
+        memoryScrollTop = scrollContainer.scrollTop;
+        startRow.value = Math.floor((scrollContainer.scrollTop - 110) / 270);
+        endRow.value = startRow.value + showRowNum;
+      });
+    };
 
     const mouseleave = async (id: string) => {
       if (timeout) {
@@ -187,7 +233,14 @@ export default {
         videoMini.pause();
       }
     };
-    return { loading, videosInfo, mouseleave, mouseenter, resource_src };
+    return {
+      loading,
+      videosInfo,
+      mouseleave,
+      mouseenter,
+      resource_src,
+      showVideoList,
+    };
   },
 };
 </script>

@@ -81,6 +81,13 @@ module.exports = defineConfig({
       .filename("js/[name].[hash].js")
       .chunkFilename("js/[name].[hash].js")
       .end();
+    config.externals({
+      vue: "Vue",
+      // "vue-router": "VueRouter",
+      "element-plus": "ElementPlus",
+      // lodash: "lodash",
+      // 更多的第三方库
+    });
     //默认开启prefetch(预先加载模块)，提前获取用户未来可能会访问的内容 在首屏会把这十几个路由文件，都一口气下载了
     config.plugins.delete("prefetch");
     config.plugin("compressionPlugin").use(

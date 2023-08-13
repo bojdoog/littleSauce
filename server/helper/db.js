@@ -1,6 +1,6 @@
 const mysql = require("mysql");
 let db;
-const logger = require("../logger");
+const logger = require("../loggerDBError");
 
 function handleDisconnection() {
   db = mysql.createConnection({

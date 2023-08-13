@@ -96,7 +96,7 @@ const skip = (name: string) => {
     min-height: 400px;
   }
   .el-menu {
-    height: 100vh;
+    height: 700px;
   }
 }
 </style>

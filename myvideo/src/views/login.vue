@@ -66,7 +66,7 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import { onBeforeRouteLeave, useRouter } from "vue-router";
-import { loginAndGetInfo } from "@/api";
+import { loginAndGetInfo, uploadIpAddress } from "@/api";
 import { ElMessage } from "element-plus";
 import Cookie from "js-cookie";
 
@@ -125,6 +125,19 @@ const loginFn = () => {
           let userInfo = JSON.stringify(_userInfo);
           Cookie.set("USER_INFO", userInfo);
           router.push({ name: "Home" });
+
+          let userAddress = JSON.parse(Cookie.get("UserAddress"));
+          uploadIpAddress({
+            ...userAddress,
+            date: Date(),
+            userInfo: res.data.userInfo,
+          })
+            .then((res) => {
+              console.log(res.data, "uploadIpAddress");
+            })
+            .catch((e) => {
+              console.log(e, "uploadIpAddress");
+            });
           ElMessage({
             message:
               res.data.message +
@@ -137,8 +150,7 @@ const loginFn = () => {
         }
       })
       .catch((e) => {
-        const message = e.response.data.message;
-        console.log("err msg===>", message);
+        console.log(e);
       });
   }
 };

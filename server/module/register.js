@@ -1,7 +1,6 @@
 const express = require("express");
 const router = express.Router();
 const db = require("../helper/db");
-const logger = require("../logger");
 router.post("/verifyUsername", async (req, res) => {
   const $query =
     "select count(*) as num from users where binary username = '" +
@@ -15,7 +14,6 @@ router.post("/verifyUsername", async (req, res) => {
       res.json({ code: 0, status: -1, msg: "用户名已存在" });
     }
   } catch (e) {
-    logger.error("验证用户名时出错", e);
     res.json({ code: -1, data: [], message: e });
   }
 });
@@ -33,7 +31,6 @@ router.post("/verifyAccount", async (req, res) => {
       res.json({ code: 0, status: -1, msg: "账号已存在" });
     }
   } catch (e) {
-    logger.error("验证用户名时出错", e);
     res.json({ code: -1, data: [], message: e });
   }
 });
