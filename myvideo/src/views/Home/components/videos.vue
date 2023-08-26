@@ -102,7 +102,7 @@ export default {
     const delay = (ms: number) =>
       new Promise((resolve, reject) => setTimeout(resolve, ms));
     // 展示的行数
-    const showRowNum = 4;
+    const showRowNum = 6;
     // 初始加载的行数
     const startRow = ref(0);
     const endRow = ref(startRow.value + 4);
@@ -210,11 +210,11 @@ export default {
 
       // 添加滚轮事件监听器
       scrollContainer.addEventListener("wheel", (e) => {
-        if (scrollContainer.scrollTop - 110 < 0) {
-          startRow.value = 0;
-          endRow.value = showRowNum;
-          return;
-        }
+        // if (scrollContainer.scrollTop - 110 < 0) {
+        //   startRow.value = 0;
+        //   endRow.value = showRowNum;
+        //   return;
+        // }
         if (memoryScrollTop > scrollContainer.scrollTop) return;
         memoryScrollTop = scrollContainer.scrollTop;
         startRow.value = Math.floor((scrollContainer.scrollTop - 110) / 270);

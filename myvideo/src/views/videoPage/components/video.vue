@@ -232,6 +232,7 @@
       @getDuration="getDuration"
       @sendDmInfo="receiveDmInfo"
       ref="frameUnderV"
+      :loading="loading"
     />
   </div>
 </template>
@@ -316,7 +317,6 @@ http
   .then(function (res) {
     loading.value = 2;
     // 处理成功情况
-    console.log(res.data.data, "111");
     video_src.value = resource_src + res.data.videoInfo.video_src;
     views.value = res.data.videoInfo.views;
     title.value = res.data.videoInfo.title;
@@ -332,7 +332,6 @@ http
   });
 
 http.get(`/video/dmInfo?video_id=${route.query.video_id}`).then((res) => {
-  console.log(res.data.data, "555");
   dmInfo = res.data.data;
   dmInfo.forEach((e) => {
     e.isSend = false;
@@ -343,7 +342,6 @@ http.get(`/video/dmInfo?video_id=${route.query.video_id}`).then((res) => {
 const playBtnfn = () => {
   if (!isEnd.value) {
     const dmboxs = document.querySelectorAll(".dmbox");
-    console.log(dmboxs, "dmboxs");
     if (isOpen.value) {
       isOpen.value = false;
       dmboxs.forEach((dmbox) => {
@@ -450,7 +448,6 @@ const mouseDown = (e) => {
     }
     video.value.currentTime =
       (moveX / progressWidthNumber) * video.value.duration;
-    console.log(moveX, progressWidthNumber, "video.value.currentTime");
     document.onmousemove = null;
     document.onmouseup = null;
     isDrug.value = false;
@@ -654,7 +651,6 @@ watch(isEnd, (newValue, oldValue) => {
 // 设置全局键盘监听事件
 const _addEventListener = () => {
   document.addEventListener("keydown", (event) => {
-    console.log(event, "keyword");
     if (event.target.tagName === "INPUT") {
       if (event.code === "Enter") {
         frameUnderV.value.sendDm();

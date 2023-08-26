@@ -53,7 +53,7 @@ const isUploading = ref(false);
 const uploadFile = () => {
   uploadInput.value.click();
 };
-const uploadRate = ref(0);
+const uploadRate = ref<string | number>(0);
 const successNum = ref(0);
 let upLoadProgress = ref("");
 const curProgress = ref();
@@ -86,7 +86,7 @@ const uploadList = async () => {
     task.then(() => {
       let index = pool.findIndex((t) => t === task);
       pool.splice(index);
-      uploadRate.value = (++successNum.value / len) * 100;
+      uploadRate.value = ((++successNum.value / len) * 100).toFixed(1);
       curProgress.value.style.width = `${uploadRate.value}%`;
     });
     // 把请求放入并发池中，如果已经达到最大并发量

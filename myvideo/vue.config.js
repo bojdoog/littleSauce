@@ -40,41 +40,41 @@ module.exports = defineConfig({
         },
       }),
     ],
-    optimization: {
-      splitChunks: {
-        chunks: "all",
-        minChunks: 2,
-        minSize: 20000,
-        // maxSize: 50000,
-        maxAsyncRequests: 5,
-        maxInitialRequests: 3,
-        automaticNameDelimiter: "-",
-        name: "",
-        cacheGroups: {
-          // vendors: {
-          //   test: /[\\/]node_modules[\\/]/,
-          //   // 命名的回调
-          //   name(module) {
-          //     // get the name. E.g. node_modules/packageName/not/this/part.js
-          //     // or node_modules/packageName
-          //     const packageName = module.context.match(
-          //       /[\\/]node_modules[\\/](.*?)([\\/]|$)/
-          //     )[1];
-          //     // npm package names are URL-safe, but some servers don't like @ symbols
-          //     return `npm.${packageName.replace("@", "")}`;
-          //   },
-          // },
-          // views: {
-          //   name: "views",
-          //   test: /[\\/]src[\\/]views[\\/]/, // 匹配 'src/components' 目录下的所有文件
-          //   minChunks: 2, // 如果一个模块至少用到1次，就分割它
-          //   priority: 100, // 优先级
-          //   chunks: "async", // 只包括初始依赖的第三方库和组件，而不包括异步加载的
-          //   reuseExistingChunk: true, // 如果当前的 chunk 已经从主 bundle 中拆分出来，那么将会直接复用，而不是重新生成一个新的
-          // },
-        },
-      },
-    },
+    // optimization: {
+    //   splitChunks: {
+    //     chunks: "all",
+    //     minChunks: 2,
+    //     minSize: 20000,
+    //     // maxSize: 50000,
+    //     maxAsyncRequests: 5,
+    //     maxInitialRequests: 3,
+    //     automaticNameDelimiter: "-",
+    //     name: "",
+    //     cacheGroups: {
+    //       // vendors: {
+    //       //   test: /[\\/]node_modules[\\/]/,
+    //       //   // 命名的回调
+    //       //   name(module) {
+    //       //     // get the name. E.g. node_modules/packageName/not/this/part.js
+    //       //     // or node_modules/packageName
+    //       //     const packageName = module.context.match(
+    //       //       /[\\/]node_modules[\\/](.*?)([\\/]|$)/
+    //       //     )[1];
+    //       //     // npm package names are URL-safe, but some servers don't like @ symbols
+    //       //     return `npm.${packageName.replace("@", "")}`;
+    //       //   },
+    //       // },
+    //       // views: {
+    //       //   name: "views",
+    //       //   test: /[\\/]src[\\/]views[\\/]/, // 匹配 'src/components' 目录下的所有文件
+    //       //   minChunks: 2, // 如果一个模块至少用到1次，就分割它
+    //       //   priority: 100, // 优先级
+    //       //   chunks: "async", // 只包括初始依赖的第三方库和组件，而不包括异步加载的
+    //       //   reuseExistingChunk: true, // 如果当前的 chunk 已经从主 bundle 中拆分出来，那么将会直接复用，而不是重新生成一个新的
+    //       // },
+    //     },
+    //   },
+    // },
   },
   chainWebpack: (config) => {
     config.output

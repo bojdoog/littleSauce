@@ -66,6 +66,7 @@ import envMap from "@/config/app.config";
 import http from "@/utils/request";
 import { useRoute } from "vue-router";
 import { ElMessage } from "element-plus";
+import bus from "@/bus";
 
 let resource_src = ref(envMap["resource"]);
 const userInfo = ref();
@@ -97,9 +98,9 @@ const getDmInfo = () => {
         const _dmInfo = res.data.data;
         _dmInfo.forEach((e: any) => {
           const { duration } = e;
-          var m: string | number = Math.floor(duration / 60);
+          let m: string | number = Math.floor(duration / 60);
           //            秒
-          var s: string | number = Math.floor(duration % 60);
+          let s: string | number = Math.floor(duration % 60);
 
           //            把数据格式转成 00:00：00
           m = m >= 10 ? m : "0" + m;
@@ -116,6 +117,18 @@ const getDmInfo = () => {
 };
 
 onMounted(async () => {
+  bus.on("sendDm", (_dmInfo: any) => {
+    const _duration = _dmInfo.duration;
+    let m: string | number = Math.floor(_duration / 60);
+    //            秒
+    let s: string | number = Math.floor(_duration % 60);
+
+    //            把数据格式转成 00:00：00
+    m = m >= 10 ? m : "0" + m;
+    s = s >= 10 ? s : "0" + s;
+    _dmInfo.duration = m + ":" + s;
+    dmInfo.value.push(_dmInfo);
+  });
   try {
     userInfo.value = await _getUserInfo();
     dmInfo.value = await getDmInfo();

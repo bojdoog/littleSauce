@@ -119,10 +119,13 @@ const _uploadVideoInfo = () => {
       const { code, msg } = res.data;
       if (code === 0) {
         ElMessage({
-          message: msg,
+          message: `${msg}，即将刷新网页`,
           type: "success",
           duration: 3000,
         });
+        setTimeout(() => {
+          location.reload();
+        }, 2000);
       } else if (code === -1) {
         ElMessage({
           message: msg,

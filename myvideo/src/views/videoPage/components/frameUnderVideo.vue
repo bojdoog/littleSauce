@@ -32,6 +32,7 @@
 import { onMounted, ref } from "vue";
 import { sendDmToServer } from "@/api";
 import { useRoute } from "vue-router";
+import bus from "@/bus";
 
 const props = defineProps({
   barrages: {
@@ -40,6 +41,10 @@ const props = defineProps({
   },
   sendDmVideoDuration: {
     type: Number,
+  },
+  loading: {
+    type: Number,
+    default: 1,
   },
 });
 
@@ -63,6 +68,7 @@ const formatDate = (val: number) => {
 };
 
 const sendDm = async () => {
+  if (props.loading === 1) return;
   sendDmNum.value++;
   await emit("getDuration");
   let dmInfo = {
@@ -71,9 +77,11 @@ const sendDm = async () => {
     duration: props.sendDmVideoDuration,
     date: getDate(),
   };
+  console.log(dmInfo, "dmInfo");
   emit("sendDmInfo", dmInfo);
   sendDmToServer(dmInfo).then(() => {
     inputDm.value.value = null;
+    bus.emit("sendDm", dmInfo);
   });
 };
 defineExpose({ sendDm });
