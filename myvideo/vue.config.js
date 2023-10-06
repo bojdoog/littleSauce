@@ -82,9 +82,9 @@ module.exports = defineConfig({
       .chunkFilename("js/[name].[hash].js")
       .end();
     config.externals({
-      vue: "Vue",
+      // vue: "Vue",
       // "vue-router": "VueRouter",
-      "element-plus": "ElementPlus",
+      // "element-plus": "ElementPlus",
       // lodash: "lodash",
       // 更多的第三方库
     });

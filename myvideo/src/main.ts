@@ -34,7 +34,6 @@ router.beforeEach((to, from, next) => {
 });
 
 router.afterEach((to, from) => {
-  console.log(to, "to");
   // @ts-ignore
   document.title = to.meta.title ? to.meta.title : "littleSauce";
 });

@@ -72,7 +72,6 @@ const canPass = () => {
     video_id: route.query.video_id,
     duration: formatTime,
   }).then(async (res: any) => {
-    console.log(res);
     ElMessage({
       message: "审核通过",
       type: "success",
@@ -86,7 +85,6 @@ const canPass = () => {
 const refuse = () => {
   auditedVideo({ isPass: false, video_id: route.query.video_id })
     .then(async (res: any) => {
-      console.log(res);
       ElMessage({
         message: "驳回视频",
         type: "warning",
@@ -97,7 +95,6 @@ const refuse = () => {
       videoSrc.value = "";
     })
     .catch((e) => {
-      console.log(e);
       ElMessage({
         message: e,
         type: "error",
@@ -116,7 +113,6 @@ onMounted(async () => {
     videoSrc.value = unauditedVideoInfoArr.value[0].video_src;
     router.push({ query: { video_id: unauditedVideoInfoArr.value[0].id } });
   }
-  console.log(unauditedVideoInfoArr.value);
 });
 </script>
 

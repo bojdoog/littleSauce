@@ -284,7 +284,6 @@ let loading = ref(1);
 const frameUnderV = ref();
 const mainProgress = ref();
 let sendDmVideoDuration = ref();
-
 const speedList = reactive([..._speedList]);
 
 let progressWidthString;
@@ -421,8 +420,19 @@ const skip = (e) => {
   dmInfo.forEach((e) => {
     if (e.duration > video.value.currentTime) {
       e.isSend = false;
-    } else if (video.value.currentTime - e.duration > 0) {
+    } else {
       e.isSend = true;
+      if (video.value.currentTime - e.duration < 5.5) {
+        const dmbox = document.createElement("div");
+        const style = document.createElement("style");
+        configDM(dmbox, e, style);
+        // 添加动画规则 keyframes
+        addAnimationRule(
+          dmbox,
+          style,
+          e.duration - video.value.currentTime + "s"
+        );
+      }
     }
   });
 };
@@ -451,6 +461,33 @@ const mouseDown = (e) => {
     document.onmousemove = null;
     document.onmouseup = null;
     isDrug.value = false;
+    // 跳转时，把全部的dmbox清除掉,
+    // 在跳转后的时间点，之后没发送的弹幕还会继续发送
+    const dmboxArr = document.querySelectorAll(".dmbox");
+    const dmContainer = document.querySelector(".dm-container");
+    if (dmboxArr.length > 0) {
+      dmboxArr.forEach((e) => {
+        dmContainer.removeChild(e);
+      });
+    }
+    dmInfo.forEach((e) => {
+      if (e.duration > video.value.currentTime) {
+        e.isSend = false;
+      } else {
+        e.isSend = true;
+        if (video.value.currentTime - e.duration < 5.5) {
+          const dmbox = document.createElement("div");
+          const style = document.createElement("style");
+          configDM(dmbox, e, style);
+          // 添加动画规则 keyframes
+          addAnimationRule(
+            dmbox,
+            style,
+            e.duration - video.value.currentTime + "s"
+          );
+        }
+      }
+    });
   };
 };
 
@@ -522,21 +559,40 @@ const waitingLoading = () => {
   bufferProgress.value.style.width = value * 100 + "%";
   console.log("缓冲时长", "buffered", length, "end", end);
 };
-const configDM = (dmbox, dmInfo) => {
+const danmuQueue = [];
+const dmLineNum = 5;
+for (let i = 0; i < dmLineNum; i++) {
+  danmuQueue[i] = true;
+}
+const configDM = (dmbox, dmInfo, style) => {
   dmbox.className = "dmbox";
   dmbox.innerHTML = `${dmInfo.barrage}`;
   dmbox.title = `${dmInfo.barrage}`;
-  let videoHeight = video.value.offsetHeight;
-  // 随机生成dmbox具顶部的问题
-  let _TOP = (Math.random() / 2) * videoHeight;
-  _TOP = _TOP - (_TOP % 40);
-  dmbox.style.top = _TOP + "px";
+  // // 随机生成dmbox具顶部的问题
+  // let videoHeight = video.value.offsetHeight;
+  // let _TOP = (Math.random() / 2) * videoHeight;
+  // _TOP = _TOP - (_TOP % 40);
+  // dmbox.style.top = _TOP + "px";
+  // 制定弹幕生成规则
+  let line = danmuQueue.findIndex((item) => item);
+  if (line === -1) {
+  }
+  dmbox.style.top = line * 40 + 4 + "px";
+  danmuQueue[line] = false;
   const dmContainer = document.querySelector(".dm-container");
-  dmContainer.appendChild(dmbox);
   // 弹幕存在的时间
-  let dmDuration = 4;
+  let dmDuration = isFullScreen.value ? 6 : 4.5 + Math.random();
   dmbox.style.setProperty("--duration", `${dmDuration}s`);
-  // 监听动画，在动画进行中的一些操作
+  dmContainer.appendChild(dmbox);
+  let dmboxWidth = getComputedStyle(dmbox, null)["width"];
+  dmboxWidth = parseFloat(dmboxWidth.slice(0, -2));
+  let videoWidth = video.value.offsetWidth;
+  let clearQueueTime =
+    (dmboxWidth / (videoWidth + dmboxWidth)) * dmDuration + 0.8;
+  setTimeout(() => {
+    danmuQueue[line] = true;
+  }, clearQueueTime * 1000);
+
   dmbox.addEventListener("animationend", () => {
     // 获取到具体的某个dmBox,然后移除掉
     dmContainer.removeChild(dmbox);
@@ -544,17 +600,22 @@ const configDM = (dmbox, dmInfo) => {
     // if (removeDmbox) {
     //   dmContainer.removeChild(dmbox);
     // }
+    document.head.removeChild(style);
   });
 };
-const addAnimationRule = (dmbox) => {
+const addAnimationRule = (dmbox, style, hasBeginTime = "0s") => {
   let videoWidth = video.value.offsetWidth;
-  let dmboxWidth = getComputedStyle(dmbox, null)["width"];
-  dmboxWidth = parseFloat(dmboxWidth.slice(0, -2));
+  let dmboxWidth = getComputedStyle(dmbox)["width"];
+  dmboxWidth = Math.ceil(dmboxWidth.slice(0, -2));
+  let animationName = `dm-${Date.now()}-${Math.random()
+    .toString()
+    .substring(2, 9)}`;
   // 用来操作keyframe
-  const runkeyframes = `@keyframes dm{0%{right: -${dmboxWidth}px}100%{right: ${
+  const runkeyframes = `@keyframes ${animationName}{0%{right: -${dmboxWidth}px}100%{right: ${
     videoWidth + dmboxWidth
   }px}}`;
-  const style = document.createElement("style");
+  dmbox.style.setProperty("--animationName", animationName);
+  dmbox.style.setProperty("--hasBeginTime", hasBeginTime);
   document.head.appendChild(style);
   style.sheet.insertRule(runkeyframes, 0);
 };
@@ -568,15 +629,14 @@ const videoPlay = () => {
     // video.value.currentTime-dmInfo.duration>4
     while (video.value.currentTime >= dmInfo.duration && !dmInfo.isSend) {
       const dmbox = document.createElement("div");
-      configDM(dmbox, dmInfo);
+      const style = document.createElement("style");
+      configDM(dmbox, dmInfo, style);
       // 添加动画规则 keyframes
-      addAnimationRule(dmbox);
+      addAnimationRule(dmbox, style);
       // 是否发送标记位
       dmInfo.isSend = true;
     }
   });
-  //            获取视频当前播放的时间
-  //           console.log(video.currentTime);
   //            当前播放时间
   let cTime = video.value.currentTime;
   //           把格式转成00:00
@@ -627,12 +687,13 @@ const getDuration = () => {
 // 添加弹幕
 const receiveDmInfo = (dmInfo) => {
   const dmbox = document.createElement("div");
+  const style = document.createElement("style");
   // 配置弹幕信息
-  configDM(dmbox, dmInfo);
+  configDM(dmbox, dmInfo, style);
   // 标注这是刚发的弹幕
   dmbox.style.border = "3px solid #00a1d6";
   // 添加动画规则 keyframes
-  addAnimationRule(dmbox);
+  addAnimationRule(dmbox, style);
 };
 
 // 处理视频结束时弹幕状态
@@ -730,7 +791,6 @@ const showControls = () => {
   }
   if (isFullScreen.value) {
     timeout = setTimeout(async () => {
-      console.log(controls);
       controls.value.style.opacity = 0;
       video.value.style.cursor = "none";
       timeout = null;
@@ -906,6 +966,7 @@ const closeSounds = () => {
     z-index: 0;
     pointer-events: none;
     ::v-deep .dmbox {
+      opacity: 1;
       -webkit-user-select: none;
       -moz-user-select: none;
       -ms-user-select: none;
@@ -919,7 +980,8 @@ const closeSounds = () => {
       font-size: 26px;
       height: 40px;
       color: #fff !important;
-      animation: dm var(--duration) linear 0s normal;
+      animation: var(--animationName) var(--duration) linear var(--hasBeginTime)
+        normal;
       &:hover {
         // 鼠标经过暂停动画
         animation-play-state: paused;

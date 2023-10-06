@@ -29,9 +29,7 @@ router.post(
   async (req, res) => {
     let { videoInfo } = req.body;
     videoInfo = JSON.parse(videoInfo);
-    console.log(videoInfo, "videoInfo");
     const file = req.file;
-    console.log(file, "file");
     file.originalname = Buffer.from(file.originalname, "latin1").toString(
       "utf8"
     );

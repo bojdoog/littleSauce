@@ -25,7 +25,6 @@ const getUserIpAndCity = () => {
           .then((data) => {
             const { country_name, region, city } = data;
             const userPHYAddress = `${region} · ${city} · ${country_name}`;
-            console.log(`IP 地址: ${ipAdress}`);
             resolve({ ipAdress, userPHYAddress });
           })
           .catch((error) => console.error("获取所在地信息时出错:", error));

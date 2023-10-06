@@ -78,7 +78,6 @@ const draw = (show_num: string[]) => {
 
   //最后把取得的验证码数组存起来，方式不唯一
   var num = show_num.join("");
-  // console.log(num);
   true_code.value = num;
 };
 //得到随机的颜色值

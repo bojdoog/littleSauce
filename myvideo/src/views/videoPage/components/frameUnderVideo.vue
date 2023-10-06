@@ -77,7 +77,6 @@ const sendDm = async () => {
     duration: props.sendDmVideoDuration,
     date: getDate(),
   };
-  console.log(dmInfo, "dmInfo");
   emit("sendDmInfo", dmInfo);
   sendDmToServer(dmInfo).then(() => {
     inputDm.value.value = null;

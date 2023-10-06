@@ -30,7 +30,6 @@ router.get("/auditeVideo", async (req, res) => {
       let posterFileName = poster_src.split("/")[2];
       video_src = "/video/" + videoFileName;
       poster_src = "/poster/" + posterFileName;
-      console.log(uid, video_src, poster_src, title, date, duration);
       const $insertVideo =
         "insert into video_info (uid,video_src,preview_src,title,date,duration) values ('" +
         uid +

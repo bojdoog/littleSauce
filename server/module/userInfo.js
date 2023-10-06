@@ -163,9 +163,15 @@ router.post("/api/getUserInfo", async (req, res) => {
     "select username,uid,headsculpture as headsculpture_src,isAdmin,profile from users where binary uid ='" +
     uid +
     "'";
-
+  const $query2 =
+    "select views,title as videoTitle,id from video_info where uid = '" +
+    uid +
+    "'";
   try {
-    const [userInfo] = await db($query);
+    const [[userInfo], videoViews] = await Promise.all([
+      db($query),
+      db($query2),
+    ]);
     if (!userInfo) {
       res.statusCode = 401;
       return res.json({
@@ -180,6 +186,7 @@ router.post("/api/getUserInfo", async (req, res) => {
       userInfo,
       message: "获取用户信息成功",
       status: 200,
+      videoViews,
     });
   } catch (e) {
     console.log(e);
@@ -193,7 +200,6 @@ router.post(
   multer({ storage }).single("file"),
   async (req, res) => {
     const { uid, username, profile, filename } = req.body;
-    console.log(uid, username, profile, filename);
     try {
       if (filename) {
         const file = req.file;

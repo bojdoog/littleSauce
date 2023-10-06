@@ -146,9 +146,6 @@ export default {
       computeDivNum();
       scrollLoadData();
       resource_src.value = envMap["resource"];
-      setInterval(() => {
-        console.log(showVideoList);
-      }, 500);
     });
     let video: any;
     let timeout: any;

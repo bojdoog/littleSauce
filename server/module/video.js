@@ -39,7 +39,6 @@ router.get("/allInfo", async (req, res) => {
       return barragesNum[0];
     });
     const barragesNumArr = await Promise.all(barragesNumPromises);
-    console.log(barragesNumArr);
     res.json({
       code: 0,
       data: videoInfo,
@@ -80,7 +79,6 @@ router.get("/dmInfo", async (req, res) => {
 router.post("/receiveDm", async (req, res) => {
   const dmInfo = req.body;
   const { video_id, barrage, duration, date } = dmInfo;
-  console.log(dmInfo);
   const $query =
     'insert into barrages (video_id,barrage,duration,date)values("' +
     video_id +

@@ -1,7 +1,12 @@
 <template>
   <div class="userPage">
+    <div class="echarts1" ref="echarts1" v-if="isShowViews"></div>
+    <div class="dvBJ" v-show="isShowViews">
+      <div class="close-views" @click="closeViews">x</div>
+    </div>
     <div class="personal-page" v-if="userInfo">
       <div class="change-info-btn" @click="alterUserInfo">修改个人信息</div>
+      <div class="show-views-btn" @click="handleViews">播放量统计</div>
       <div class="row-item font1">
         昵称：
         <span style="color: #ff7f00">{{ userInfo.username }}</span>
@@ -54,13 +59,14 @@
   </div>
 </template>
 <script setup lang="ts">
-import { onMounted, onUnmounted, reactive, ref } from "vue";
+import { nextTick, onMounted, onUnmounted, reactive, ref } from "vue";
 import Cookies from "js-cookie";
 import config from "@/config/app.config";
 import { getUserInfo } from "@/api";
 import { ElMessage } from "element-plus";
 import InputForm from "./components/inputForm.vue";
 import bus from "@/bus";
+import * as echarts from "echarts";
 
 const userCity = ref();
 const userIp = ref();
@@ -68,6 +74,10 @@ let userInfo = ref();
 const sourceSrc = ref(config["resource"]);
 const showInputForm = ref(false);
 let initFormData = reactive({});
+const echarts1 = ref();
+const videoViews = ref();
+const isShowViews = ref(false);
+let options;
 
 const _getUserInfo = () => {
   let { uid } = JSON.parse(Cookies.get("USER_INFO"));
@@ -75,6 +85,7 @@ const _getUserInfo = () => {
     getUserInfo({ uid })
       .then((res) => {
         const _userInfo = res.data.userInfo;
+        videoViews.value = [...res.data.videoViews];
         initFormData = { ..._userInfo };
         resolve(_userInfo);
       })
@@ -93,6 +104,21 @@ const closeForm = () => {
   showInputForm.value = false;
 };
 
+const handleViews = async () => {
+  if (videoViews.value.length <= 0) {
+    ElMessage({ message: "您还没有视频作品", type: "warning", duration: 3000 });
+    return;
+  }
+  isShowViews.value = true;
+  await nextTick();
+  const _echarts1 = echarts.init(echarts1.value, "dark");
+  _echarts1.setOption(options);
+};
+
+const closeViews = () => {
+  isShowViews.value = false;
+};
+
 const updateInfo = async () => {
   userInfo.value = await _getUserInfo();
   ElMessage({
@@ -107,7 +133,6 @@ const updateInfo = async () => {
     profile: userInfo.value.profile,
     username: userInfo.value.username,
   };
-  console.log(_userInfo, "_userInfo");
   Cookies.set("USER_INFO", JSON.stringify(_userInfo));
   bus.emit("updateHeadsculpture");
 };
@@ -122,6 +147,81 @@ onMounted(async () => {
   const { ipAdress, userPHYAddress } = JSON.parse(Cookies.get("UserAddress"));
   userCity.value = userPHYAddress;
   userIp.value = ipAdress;
+  await nextTick();
+  videoViews.value.sort((a: any, b: any) => b.views - a.views);
+  videoViews.value.splice(5);
+  videoViews.value.sort((a: any, b: any) => a.id - b.id);
+  const title = videoViews.value.map((item: any) => item.videoTitle);
+  const views = videoViews.value.map((item: any) => item.views);
+  options = {
+    backgroundColor: {
+      type: "radial",
+      x: 0.3,
+      y: 0.3,
+      r: 0.8,
+      colorStops: [
+        {
+          offset: 0,
+          color: "#29bdd9",
+        },
+        {
+          offset: 1,
+          color: "#000000",
+        },
+      ],
+    },
+    title: {
+      text: "您的热门视频播放量",
+      textStyle: {
+        color: "#99FFFF", // 设置标题文本颜色为红色
+        fontSize: 18, // 设置标题文本大小为18px
+        fontWeight: "bold", // 设置标题文本加粗
+      },
+    },
+    tooltip: {},
+    xAxis: {
+      data: [...title],
+      axisLabel: {
+        formatter: function (value: any) {
+          // 设置最大宽度，单位可以根据需要进行调整
+          var maxWidth = 10;
+          var formattedValue = value;
+
+          // 判断文本宽度是否超过最大宽度
+          if (value.length > maxWidth) {
+            // 截取文本并添加省略号
+            formattedValue = value.substring(0, maxWidth - 2) + "...";
+          }
+
+          // 返回格式化后的文本
+          return formattedValue;
+        },
+        // interval: 0, // 强制显示所有的标签文本
+        rotate: 0, // 设置倾斜角度，以便更好地显示长文本
+      },
+    },
+    yAxis: {
+      axisLabel: {
+        textStyle: {
+          color: "#FF77FF", // 设置字体颜色为红色
+        },
+      },
+    },
+    series: [
+      {
+        name: "播放量",
+        type: "line",
+        data: [...views],
+        itemStyle: {
+          color: "#99FFFF", // 设置柱子颜色为蓝色
+        },
+        label: {
+          show: true,
+          color: "#FF7744", // 设置字体颜色为红色
+        },
+      },
+    ],
+  };
 });
 
 onUnmounted(() => {
@@ -130,6 +230,36 @@ onUnmounted(() => {
 </script>
 
 <style lang="scss" scoped>
+.dvBJ {
+  z-index: 5;
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.296);
+  top: 0px;
+  .close-views {
+    position: absolute;
+    font-size: 28px;
+    color: #fff;
+    cursor: pointer;
+    left: 1290px;
+    top: 50px;
+  }
+}
+.echarts1 {
+  z-index: 10;
+  height: 500px;
+  width: 1200px;
+  position: absolute;
+  top: 50px;
+  left: 50px;
+  // transform: translate(-250px, -250px);
+  background-color: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  animation: initForm 0.4s ease-in-out;
+}
 .userPage {
   height: 100%;
   width: 100%;
@@ -150,12 +280,12 @@ onUnmounted(() => {
 }
 .personal-page {
   position: relative;
-  width: 700px;
+  width: 800px;
   padding: 70px 0 0 120px;
   .change-info-btn {
     position: absolute;
     right: 0px;
-    bottom: 120px;
+    top: 150px;
     width: 250px;
     height: 80px;
     background-color: #5f9f9f;
@@ -168,6 +298,24 @@ onUnmounted(() => {
     transition: background-color 0.2s linear;
     &:hover {
       background-color: #85dcdc;
+    }
+  }
+  .show-views-btn {
+    position: absolute;
+    right: 0px;
+    top: 350px;
+    width: 250px;
+    height: 80px;
+    background-color: #793bd0;
+    font: italic 600 30px/80px Georgia, serif;
+    border-radius: 20px;
+    color: #fff;
+    text-align: center;
+    box-shadow: 0 0 25px #674696;
+    cursor: pointer;
+    transition: background-color 0.2s linear;
+    &:hover {
+      background-color: #b58eec;
     }
   }
   .row-item {

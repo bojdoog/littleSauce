@@ -39,21 +39,6 @@ app.use(
   })
 );
 
-// app.use((req, res, next) => {
-//     console.log('every');
-//     if (req.headers.authorization != undefined) {
-//         const token = req.headers.authorization.slice(7)
-//         console.log(token);
-//         var info = jwt.verify(token, secretKey, (error, decoded) => {
-//             if (error) {
-//                 // console.log("token过期或者无效")
-//                 return { tokenOut: true }
-//             }
-//         });
-//         console.log(info, '11');
-//     }
-//     next()
-// })
 app.use("/video", require(__dirname + "/module/video"));
 app.use("/userInfo", require(__dirname + "/module/userInfo"));
 app.use("/upload", require(__dirname + "/module/upload"));

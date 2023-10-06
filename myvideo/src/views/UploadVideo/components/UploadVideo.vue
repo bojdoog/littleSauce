@@ -85,7 +85,7 @@ const uploadList = async () => {
     // 从并发池中移除已经完成的请求
     task.then(() => {
       let index = pool.findIndex((t) => t === task);
-      pool.splice(index);
+      pool.splice(index, 1);
       uploadRate.value = ((++successNum.value / len) * 100).toFixed(1);
       curProgress.value.style.width = `${uploadRate.value}%`;
     });
