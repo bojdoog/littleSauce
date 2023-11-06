@@ -144,9 +144,11 @@ onMounted(async () => {
     type: "success",
     duration: 3000,
   });
-  const { ipAdress, userPHYAddress } = JSON.parse(Cookies.get("UserAddress"));
-  userCity.value = userPHYAddress;
-  userIp.value = ipAdress;
+  if (Cookies.get("UserAddress")) {
+    const { ipAdress, userPHYAddress } = JSON.parse(Cookies.get("UserAddress"));
+    userCity.value = userPHYAddress;
+    userIp.value = ipAdress;
+  }
   await nextTick();
   videoViews.value.sort((a: any, b: any) => b.views - a.views);
   videoViews.value.splice(5);

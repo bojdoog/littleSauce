@@ -249,7 +249,7 @@ const handleLogin = (loginInfo: loginInfo) => {
       });
     } else {
       if (res.data.status === 200) {
-        Cookie.set("USER_TOKEN", res.data.token);
+        Cookie.set("USER_TOKEN", res.data.token, { expires: 2 });
         let _userInfo = {
           ...res.data.userInfo,
           menu: res.data.menu,

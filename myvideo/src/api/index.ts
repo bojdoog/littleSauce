@@ -2,6 +2,14 @@ import http from "../utils/request";
 
 // 请求首页数据
 
+export const refreshToken = (data: any) => {
+  return http.post("/userInfo/api/refreshToken", data);
+};
+
+export const loginByToken = (data: any) => {
+  return http.post("/userInfo/api/loginByToken", { token: data });
+};
+
 export const loginAndGetInfo = (data: any) => {
   return http.post("/userInfo/api/login", data);
 };

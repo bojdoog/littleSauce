@@ -1,5 +1,5 @@
 <template>
-  <div class="common-layout">
+  <div class="common-layout" v-if="isLoading">
     <el-container>
       <el-aside width="auto"><CommonAside /></el-aside>
       <el-container>
@@ -13,12 +13,18 @@
 <script lang="ts">
 import CommonHeader from "@/components/CommonHeader.vue";
 import CommonAside from "../components/CommonAside.vue";
+import { inject } from "vue";
 export default {
   components: {
     CommonAside,
     CommonHeader,
   },
-  setup() {},
+  setup() {
+    let isLoading = inject("isLoading");
+    console.log(isLoading);
+
+    return { isLoading };
+  },
 };
 </script>
   

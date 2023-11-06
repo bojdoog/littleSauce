@@ -97,20 +97,23 @@ const uploadList = async () => {
     }
   }
   // 等待所有分片上传完成
-  await Promise.all(uploadTasks).catch((e: any) => {
-    console.log(e);
-    ElMessage({
-      message: "视频上传失败",
-      type: "error",
-      duration: 3000,
+  await Promise.all(uploadTasks)
+    .then(() => {
+      ElMessage({
+        showClose: true,
+        message: "视频上传完成",
+        type: "success",
+        duration: 8000,
+      });
+    })
+    .catch((e: any) => {
+      console.log(e);
+      ElMessage({
+        message: "视频上传失败",
+        type: "error",
+        duration: 3000,
+      });
     });
-  });
-  ElMessage({
-    showClose: true,
-    message: "视频上传完成",
-    type: "success",
-    duration: 8000,
-  });
   mergeChunks({
     filename: file.value.name.slice(0, -4),
   })

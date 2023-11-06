@@ -7,8 +7,9 @@ import axios, {
 import Cookie from "js-cookie";
 import router from "@/router/index";
 import { ElMessage } from "element-plus";
-
+import Cookies from "js-cookie";
 import envMap from "@/config/app.config";
+import { refreshToken } from "@/api";
 
 const getErrorMessage = (status: number) => {
   switch (status) {
@@ -70,6 +71,11 @@ http.interceptors.response.use(
   function (response: AxiosResponse) {
     // 2xx 范围内的状态码都会触发该函数。
     // 对响应数据做点什么
+
+    // // @ts-ignore
+    // const SetCookieStr = response.headers.get("set-cookie");
+    // console.log(SetCookieStr, "headers");
+
     return response;
   },
   function (error) {
@@ -83,8 +89,27 @@ http.interceptors.response.use(
       //   type: "error",
       //   duration: 3000,
       // });
+
       if (status === 401) {
-        router.push("login");
+        const _refreshToken = Cookies.get("refersh_Token");
+        const uid = JSON.parse(Cookies.get("USER_INFO")).uid;
+        console.log(_refreshToken, uid, "dddddddddddd");
+
+        if (!uid || !_refreshToken) {
+          router.push("login");
+        }
+        refreshToken({ refreshToken: _refreshToken, uid })
+          .then((res) => {
+            const token = res.data.token;
+            Cookies.set("USER_TOKEN", token);
+            // const originalRequest = error.config;
+            // console.log(originalRequest, "originalRequest");
+            // return http(originalRequest);
+          })
+          .catch((err) => {
+            console.log(err);
+            router.push("login");
+          });
       }
     }
     return Promise.reject(error);

@@ -29,79 +29,54 @@ var storage = multer.diskStorage({
   },
 });
 
-const adminMenu = [
-  {
-    path: "/home",
-    name: "Home",
-    label: "首页",
-    icon: "House",
-  },
-  {
-    path: "/user",
-    name: "User",
-    label: "个人主页",
-    icon: "User",
-  },
-  // {
-  //   path: "/watchHistory",
-  //   name: "WatchHistory",
-  //   label: "观看历史",
-  //   icon: "VideoPlay",
-  // },
-  {
-    path: "/uploadVideo",
-    name: "UploadVideo",
-    label: "上传视频",
-    icon: "Upload",
-  },
-  {
-    path: "/subscription",
-    name: "Subscription",
-    label: "你的订阅",
-    icon: "UserFilled",
-    children: [],
-  },
-  {
-    path: "/examineVideo",
-    name: "ExamineVideo",
-    label: "视频审核",
-    icon: "Edit",
-  },
-];
+router.post("/api/loginByToken", async (req, res) => {
+  const token = req.body.token;
+  try {
+    const decode = jwt.verify(token, secretKey);
+    const { account, password } = decode;
+    const $query =
+      "select username,uid,headsculpture as headsculpture_src,isAdmin,profile from users where binary account ='" +
+      account +
+      "'and password ='" +
+      password +
+      "'";
+    const [userInfo] = await db($query);
+    if (!userInfo) {
+      res.statusCode = 401;
+      return res.json({
+        code: -1,
+        userInfo: null,
+        message: "账号密码存在错误",
+        status: 401,
+      });
+    }
 
-const userMenu = [
-  {
-    path: "/home",
-    name: "Home",
-    label: "首页",
-    icon: "House",
-  },
-  {
-    path: "/user",
-    name: "User",
-    label: "个人主页",
-    icon: "User",
-  },
-  // {
-  //   path: "/watchHistory",
-  //   name: "WatchHistory",
-  //   label: "观看历史",
-  //   icon: "VideoPlay",
-  // },
-  {
-    path: "/uploadVideo",
-    name: "UploadVideo",
-    label: "上传视频",
-    icon: "Upload",
-  },
-  {
-    path: "/subscription",
-    name: "Subscription",
-    label: "你的订阅",
-    icon: "UserFilled",
-    children: [],
-  },
-];
+    if (userInfo.isAdmin === 1) {
+      res.json({
+        code: 0,
+        userInfo,
+        message: "登录成功",
+        status: 200,
+        isAdmin: 1,
+      });
+      console.log("管理员登录");
+    } else {
+      res.json({
+        code: 0,
+        userInfo,
+        message: "登录成功",
+        status: 200,
+        isAdmin: 0,
+      });
+      console.log("普通用户登录");
+    }
+  } catch (e) {
+    res
+      .status(401)
+      .json({ code: -1, data: [], message: "服务器报错", reason: e });
+  }
+});
+
 // app.use('/api', expressJWT({ secret: secretKey, algorithms: ["HS256"] })),
 // 登录接口
 router.post("/api/login", async (req, res) => {
@@ -123,12 +98,32 @@ router.post("/api/login", async (req, res) => {
         status: 401,
       });
     }
+
     // 登录成功
     // 在登录成功之后，调用 jwt.sign() 方法生成 JWT 字符串。并通过 token 属性发送给客户端
-    const tokenStr = jwt.sign({ username: userInfo.account }, secretKey, {
-      // 有效期内时长，秒*分*时*天
-      expiresIn: 60 * 60 * 24 * 1,
-    });
+    const tokenStr = jwt.sign(
+      { account: user.account, password: user.password },
+      secretKey,
+      {
+        // 有效期内时长，秒*分*时*天
+        expiresIn: 60 * 15,
+      }
+    );
+    const refreshTokenStr = jwt.sign(
+      { account: user.account, password: user.password },
+      secretKey,
+      {
+        // 有效期内时长，秒*分*时*天
+        expiresIn: 60 * 60 * 24 * 7,
+      }
+    );
+    const expires = new Date(
+      Date.now() + 7 * 24 * 60 * 60 * 1000
+    ).toUTCString();
+    res.setHeader(
+      "Set-Cookie",
+      `refreshToken=${refreshTokenStr}; Expires=${expires}`
+    );
     if (userInfo.isAdmin === 1) {
       res.json({
         code: 0,
@@ -136,7 +131,8 @@ router.post("/api/login", async (req, res) => {
         message: "登录成功",
         status: 200,
         token: tokenStr,
-        menu: adminMenu,
+        refreshToken: refreshTokenStr,
+        isAdmin: 1,
       });
       console.log("管理员登录");
     } else {
@@ -146,13 +142,41 @@ router.post("/api/login", async (req, res) => {
         message: "登录成功",
         status: 200,
         token: tokenStr,
-        menu: userMenu,
+        refreshToken: refreshTokenStr,
+        isAdmin: 0,
       });
       console.log("普通用户登录");
     }
   } catch (e) {
     console.log(e);
     res.json({ code: -1, data: [], message: "服务器报错", reason: e });
+  }
+});
+
+router.post("/api/refreshToken", async (req, res) => {
+  const { refreshToken, uid } = req.body;
+  try {
+    const { account, password } = jwt.verify(refreshToken, secretKey);
+    const $query =
+      "select uid as _uid from users where binary account ='" +
+      account +
+      "'and password ='" +
+      password +
+      "'";
+    const [_uid] = await db($query);
+    if (_uid._uid && _uid._uid === uid) {
+      const tokenStr = jwt.sign(
+        { account: account, password: password },
+        secretKey,
+        {
+          // 有效期内时长，秒*分*时*天
+          expiresIn: 60 * 15,
+        }
+      );
+      res.json({ token: tokenStr });
+    }
+  } catch (e) {
+    console.log(e);
   }
 });
 

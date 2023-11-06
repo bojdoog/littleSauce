@@ -117,7 +117,9 @@ const loginFn = () => {
             duration: 3000,
           });
         } else {
-          Cookie.set("USER_TOKEN", res.data.token);
+          const expires = new Date(Date.now() + 5 * 60 * 1000);
+          Cookie.set("USER_TOKEN", res.data.token, { expires: expires });
+          Cookie.set("refersh_Token", res.data.refreshToken, { expires: 7 });
           let _userInfo = {
             ...res.data.userInfo,
             menu: res.data.menu,

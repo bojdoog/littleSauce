@@ -8,6 +8,11 @@ import vue3videoPlay from "vue3-video-play"; // 引入组件
 import "vue3-video-play/dist/style.css"; // 引入css
 import Cookie from "js-cookie";
 import * as ElementPlusIconsVue from "@element-plus/icons-vue";
+import { loginByToken } from "./api";
+import { ElMessage } from "element-plus";
+
+var a = 2;
+console.log(window, "window");
 
 router.beforeEach((to, from, next) => {
   const token = Cookie.get("USER_TOKEN");

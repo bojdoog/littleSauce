@@ -58,6 +58,7 @@ import {
 import * as ElIconModules from "@element-plus/icons"; //导入所有element icon图标
 import { useRouter } from "vue-router";
 import { useStore } from "vuex";
+import menu from "@/router/menu";
 import Cookie from "js-cookie";
 const router = useRouter();
 const store = useStore();
@@ -66,9 +67,8 @@ onMounted(() => {});
 
 const userInfo = JSON.parse(Cookie.get("USER_INFO"));
 const routeInfo = userInfo.menu;
-
-const hasChildren = routeInfo.filter((item: any) => item.children);
-const noChildren = routeInfo.filter((item: any) => !item.children);
+const hasChildren = menu.filter((item: any) => item.children);
+const noChildren = menu.filter((item: any) => !item.children);
 console.log(noChildren, hasChildren, "dd");
 
 const handleOpen = (key: string, keyPath: string[]) => {
