@@ -304,7 +304,7 @@ onUnmounted(() => {
   }
   .show-views-btn {
     position: absolute;
-    right: 0px;
+    right: -150px;
     top: 350px;
     width: 250px;
     height: 80px;

@@ -38,6 +38,31 @@
       </template>
     </el-skeleton>
     <div class="videos" v-else id="videos">
+      <div class="carousel">
+        <el-carousel :interval="5000" arrow="always" height="400px">
+          <el-carousel-item v-for="item in carouselItems" :key="item">
+            <router-link
+              target="_blank"
+              :to="{ name: 'VideoPage', query: { video_id: item.id } }"
+            >
+              <div style="position: relative">
+                <div class="carousel-bg"></div>
+                <img
+                  class="preview_img"
+                  :src="
+                    item.preview_src
+                      ? resource_src + item.preview_src
+                      : resource_src + 'previews/thumb_icon.png'
+                  "
+                  :alt="item.title"
+                  loading="lazy"
+                />
+                <div class="video-title">{{ item.title }}</div>
+              </div>
+            </router-link>
+          </el-carousel-item>
+        </el-carousel>
+      </div>
       <div class="everyvideo" v-for="item in showVideoList" :key="item.id">
         <router-link
           target="_blank"
@@ -98,6 +123,7 @@ export default {
   setup() {
     const router = useRouter();
     let videosInfo: videoinfo[] = reactive([]);
+    const carouselItems: videoinfo[] = reactive([]);
     const loading = ref(false);
     const delay = (ms: number) =>
       new Promise((resolve, reject) => setTimeout(resolve, ms));
@@ -119,12 +145,14 @@ export default {
       .then(async function (res: any) {
         // 处理成功情况
         loading.value = true;
-        res.data.data.forEach((e: any) => {
+        res.data.data.forEach((e: any, index: any) => {
           e.date =
             e.date.split(" ")[0].split("-")[1] +
             "-" +
             e.date.split(" ")[0].split("-")[2];
-
+          if (index <= 3) {
+            carouselItems.push(e);
+          }
           videosInfo.push(e);
         });
         let i = 0;
@@ -231,6 +259,7 @@ export default {
       }
     };
     return {
+      carouselItems,
       loading,
       videosInfo,
       mouseleave,
@@ -288,6 +317,43 @@ export default {
   display: grid;
   grid-template-columns: repeat(auto-fill, 240px);
   grid-gap: 30px;
+  .carousel {
+    grid-column-start: 1;
+    grid-column-end: 4;
+    grid-row-start: 1;
+    grid-row-end: 3;
+    .carousel-bg {
+      width: 100%;
+      height: 100%;
+      border-radius: 5%;
+      position: absolute;
+      left: 0px;
+      bottom: 0px;
+      background: linear-gradient(
+        to bottom,
+        rgba(10, 1, 1, 0.121) 60%,
+        rgb(9, 9, 0)
+      );
+    }
+    .video-title {
+      z-index: 10;
+      color: #fff;
+      position: absolute;
+      bottom: 120px;
+      left: 20px;
+    }
+    .preview_img {
+      width: 100%;
+      height: 100%;
+    }
+  }
+  .el-carousel__item:nth-child(2n) {
+    background-color: #99a9bf;
+  }
+
+  .el-carousel__item:nth-child(2n + 1) {
+    background-color: #d3dce6;
+  }
   .everyvideo {
     width: 240px;
     height: 220px;
