@@ -38,17 +38,17 @@
       </template>
     </el-skeleton>
     <div class="videos" v-else id="videos">
-      <div class="carousel">
+      <!-- <div class="carousel">
         <el-carousel :interval="5000" arrow="always" height="400px">
           <el-carousel-item v-for="item in carouselItems" :key="item">
             <router-link
               target="_blank"
               :to="{ name: 'VideoPage', query: { video_id: item.id } }"
             >
-              <div style="position: relative">
+              <div style="position: relative; background-color: black">
                 <div class="carousel-bg"></div>
                 <img
-                  class="preview_img"
+                  style="width: auto; height: 100%"
                   :src="
                     item.preview_src
                       ? resource_src + item.preview_src
@@ -62,7 +62,7 @@
             </router-link>
           </el-carousel-item>
         </el-carousel>
-      </div>
+      </div> -->
       <div class="everyvideo" v-for="item in showVideoList" :key="item.id">
         <router-link
           target="_blank"
