@@ -11,15 +11,17 @@
     </div>
     <video @click="uploadFile" ref="video" class="videofile" v-else></video>
     <input type="file" name="" ref="uploadInput" @change="showInput" />
-    <div class="upload-info" v-if="store.state.tab.hasUploadVideo">
-      <div class="fileName">视频文件名：{{ file.name }}</div>
-      <div class="upload-progress">
+    <div class="upload-info">
+      <div class="fileName" v-if="store.state.tab.hasUploadVideo">
+        视频文件名：{{ file.name }}
+      </div>
+      <div class="upload-progress" v-if="store.state.tab.hasUploadVideo">
         <div class="cur-progress" ref="curProgress"></div>
         <div class="total-progress"></div>
         <div class="upload-rate">{{ uploadRate }}/100%</div>
       </div>
     </div>
-    <div class="describe" v-else>
+    <div class="describe" v-if="!store.state.tab.hasUploadVideo">
       请上传视频<br /><span style="font-size: 8px"
         >不要上传大文件视频，因为流量有限呜呜</span
       >
@@ -68,7 +70,7 @@ let _hash = generateSHA1Hash("littleSauce");
 
 let pool: Promise<any>[] = []; //Concurrent pool
 let max = 3; //Maximum concurrency
-const uploadList = async () => {
+const uploadList = async (hash = 0) => {
   // 所有上传切片的组
   const uploadTasks = [];
   for (let i = 0; i < fileChunks.length; i++) {
@@ -78,7 +80,6 @@ const uploadList = async () => {
     formData.append("filename", file.value.name.slice(0, -4));
     formData.append("hash", `${item.hash}`);
     formData.append("chunk", item.chunk);
-
     // 上传分片
     let task = uploadVideo(formData);
     uploadTasks.push(task);
@@ -86,7 +87,10 @@ const uploadList = async () => {
     task.then(() => {
       let index = pool.findIndex((t) => t === task);
       pool.splice(index, 1);
-      uploadRate.value = ((++successNum.value / len) * 100).toFixed(1);
+      uploadRate.value = (
+        ((++successNum.value + hash) / (hash + len)) *
+        100
+      ).toFixed(1);
       curProgress.value.style.width = `${uploadRate.value}%`;
     });
     // 把请求放入并发池中，如果已经达到最大并发量
@@ -156,7 +160,7 @@ const showInput = async () => {
     fileChunks = [...sliceFile(file.value, point, hash)];
     router.push({ params: { videoName: file.value.name } });
     initProgress();
-    uploadList();
+    uploadList(hash);
     store.commit("changeHasUploadVideo", true);
     const objectURL = URL.createObjectURL(file.value);
     await nextTick();

@@ -41,7 +41,6 @@ export default {
   padding: 0px;
 }
 .main-bg {
-  background-image: url("https://pic.616pic.com/bg_w1180/00/05/22/tUOCiFHP0n.jpg");
   background-size: auto auto; /* Auto 宽度和高度 */
   background-repeat: repeat; /* 纵向重复 */
 }

@@ -33,14 +33,6 @@ const adminMenu = [
     url: "./views/examineVideo.vue",
     meta: { title: "审核视频" },
   },
-  {
-    path: "/subscription",
-    name: "Subscription",
-    label: "你的订阅",
-    icon: "UserFilled",
-    children: [],
-    url: "./views/subscription.vue",
-  },
 ];
 
 const userMenu = [
@@ -73,14 +65,6 @@ const userMenu = [
     icon: "Upload",
     url: "./views/UploadVideo/index.vue",
     meta: { title: "上传视频" },
-  },
-  {
-    path: "/subscription",
-    name: "Subscription",
-    label: "你的订阅",
-    icon: "UserFilled",
-    children: [],
-    url: "./views/subscription.vue",
   },
 ];
 

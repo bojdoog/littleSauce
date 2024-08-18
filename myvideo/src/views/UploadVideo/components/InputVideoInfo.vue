@@ -1,5 +1,5 @@
 <template>
-  <div class="input-video-info" v-show="store.state.tab.hasUploadVideo">
+  <div class="input-video-info">
     <div class="input-frames">
       <div class="line">
         <div class="font1"><span style="color: red">*</span>标题:</div>

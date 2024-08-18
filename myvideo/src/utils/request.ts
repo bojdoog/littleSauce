@@ -43,7 +43,7 @@ const getErrorMessage = (status: number) => {
 };
 
 const http: AxiosInstance = axios.create({
-  // baseURL: 'http://111.231.7.251:443',
+  // baseURL: 'http://106.14.207.119:2000',
   // baseURL: 'http://127.0.0.1:443',
   baseURL: envMap["device"],
   timeout: 10000,
@@ -62,7 +62,7 @@ http.interceptors.request.use(
   },
   function (error) {
     // 对请求错误做些什么
-    return Promise.reject(error);
+    return console.error("请求失败", error);
   }
 );
 
@@ -82,6 +82,14 @@ http.interceptors.response.use(
     // 超出 2xx 范围的状态码都会触发该函数。
     // 对响应错误做点什么
     if (error.response) {
+      if (error.code === "ECONNABORTED" || error.message.includes("timeout")) {
+        // 处理请求超时的情况
+        ElMessage({
+          message: "请求超时，请稍后重试",
+          type: "error",
+          duration: 3000,
+        });
+      }
       const status = error.response.status;
       const wrongReason = getErrorMessage(status);
       // ElMessage({

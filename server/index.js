@@ -62,6 +62,6 @@ app.use((err, req, res, next) => {
   });
 });
 
-app.listen(443, () => {
-  console.log("服务器运行在http://111.231.7.251:443");
+app.listen(2000, () => {
+  console.log("服务器运行在http://106.14.207.119:2000");
 });

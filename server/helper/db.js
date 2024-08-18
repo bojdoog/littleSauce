@@ -1,18 +1,20 @@
-const mysql = require("mysql");
+const mysql = require("mysql2");
 let db;
 const logger = require("../loggerDBError");
 
 function handleDisconnection() {
   db = mysql.createConnection({
-    host: "111.231.7.251",
+    host: "106.14.207.119",
     user: "root",
-    password: "zhl20020203",
+    password: "Zhl20020203",
     database: "videoweb",
-    port: "33060",
+    port: "3306",
   });
   db.connect((err) => {
     if (err) {
-      setTimeout("handleDisconnection()", 2000);
+      setTimeout(() => {
+        handleDisconnection();
+      }, 2000);
     }
   });
 

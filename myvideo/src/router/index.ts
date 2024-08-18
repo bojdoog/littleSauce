@@ -22,13 +22,6 @@ const routes: Array<RouteRecordRaw & { meta?: MetaType }> = [
         meta: { title: "littleSauce" },
       },
       {
-        // 订阅
-        path: "/subscription",
-        name: "Subscription",
-        component: () => import("@/views/subscription.vue"),
-        children: [],
-      },
-      {
         path: "/user/:videoName?",
         name: "User",
         component: () => import("@/views/PersonalPage/index.vue"),
@@ -63,7 +56,7 @@ const routes: Array<RouteRecordRaw & { meta?: MetaType }> = [
   {
     path: "/register",
     name: "Register",
-    component: () => import("@/views/register.vue"),
+    component: import("@/views/register.vue"),
     meta: { title: "请先注册" },
   },
   // {

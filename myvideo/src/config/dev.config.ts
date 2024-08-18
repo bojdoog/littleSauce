@@ -1,8 +1,8 @@
 import servers from "./servers";
 
 export default {
-  [servers.device]: "http://111.231.7.251:443",
+  [servers.device]: "http://106.14.207.119:2000",
   //   [servers.resource]: "http://127.0.0.1:7000",
-  // [servers.device]: "http://111.231.7.251:443",
-  [servers.resource]: "http://111.231.7.251",
+  // [servers.device]: "http://106.14.207.119",
+  [servers.resource]: "http://106.14.207.119",
 };
